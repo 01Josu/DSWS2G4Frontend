@@ -1,0 +1,51 @@
+<!-- Fondo semitransparente -->
+<div class="modal-backdrop show"></div>
+
+<!-- Modal de Registro -->
+<div class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content shadow-lg rounded-3">
+      <!-- Encabezado -->
+      <div class="modal-header bg-dark text-white text-center w-100">
+        <h5 class="modal-title d-flex justify-content-center align-items-center">
+          <i class="bi bi-person-plus-fill me-2"></i> Regístrate
+        </h5>
+        <button type="button" class="btn-close btn-close-white" (click)="closeModal()"></button>
+      </div>
+      
+      <!-- Cuerpo -->
+      <div class="modal-body p-4">
+        <form (submit)="onRegister($event)">
+          <div class="mb-3">
+            <label for="registerEmail" class="form-label text-dark">Correo electrónico</label>
+            <input type="email" class="form-control form-control-lg rounded-pill border-2" id="registerEmail" placeholder="usuario@correo.com" required>
+          </div>
+
+          <div class="mb-3">
+            <label for="registerUsername" class="form-label text-dark">Nombre</label>
+            <input type="text" class="form-control form-control-lg rounded-pill border-2" id="registerUsername" placeholder="Tu nombre completo" required>
+          </div>
+
+          <div class="mb-3">
+            <label for="registerPassword" class="form-label text-dark">Contraseña</label>
+            <input type="password" class="form-control form-control-lg rounded-pill border-2" id="registerPassword" placeholder="Contraseña" required minlength="4">
+          </div>
+
+          <div class="mb-3">
+            <label for="confirmPassword" class="form-label text-dark">Confirmar contraseña</label>
+            <input type="password" class="form-control form-control-lg rounded-pill border-2" id="confirmPassword" placeholder="Confirmar Contraseña" required minlength="4">
+          </div>
+
+          <div class="d-grid gap-2">
+            <button type="submit" class="btn btn-dark btn-lg rounded-pill shadow-sm">Registrar</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Pie -->
+      <div class="modal-footer justify-content-center border-0">
+        <small class="text-muted">¿Ya tienes cuenta? <a routerLink="/login">Inicia sesión</a></small>
+      </div>
+    </div>
+  </div>
+</div>

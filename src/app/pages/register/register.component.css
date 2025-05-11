@@ -1,0 +1,62 @@
+/*Modal login*/
+.modal-content {
+  background: #f8f9fa;
+  border-radius: 15px;
+  border: none;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.modal-header {
+  border-bottom: 2px solid #e9ecef;
+}
+
+.modal-body {
+  background-color: #ffffff;
+  padding: 30px;
+}
+
+.form-control-lg {
+  font-size: 1.1rem;
+  padding: 1rem;
+  border-radius: 30px;
+  border: 2px solid #ced4da;
+}
+
+.form-control:focus {
+  border-color: #495057;
+  box-shadow: 0 0 0 0.25rem rgba(53, 130, 185, 0.25);
+}
+
+.btn-dark {
+  background-color: #343a40;
+  border: none;
+  transition: background-color 0.3s ease;
+}
+
+.btn-dark:hover {
+  background-color: #23272b;
+}
+
+.modal-footer {
+  background-color: #f1f1f1;
+  border-top: 2px solid #e9ecef;
+}
+
+.modal-footer small {
+  color: #495057;
+}
+
+.hover-shadow-lg:hover {
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.text-decoration-none {
+  text-decoration: none;
+  color: #007bff;
+  font-weight: 600;
+}
+
+.text-decoration-none:hover {
+  text-decoration: underline;
+  color: #0056b3;
+}

@@ -1,0 +1,42 @@
+<div class="modal-backdrop show"></div> <!-- fondo semitransparente -->
+<div class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content shadow-lg rounded-3">
+      <!-- Encabezado -->
+      <div class="modal-header bg-dark text-white text-center w-100">
+        <h5 class="modal-title d-flex justify-content-center align-items-center">
+          <i class="bi bi-person-fill me-2"></i> Iniciar Sesión
+        </h5>
+        <button type="button" class="btn-close btn-close-white" (click)="closeModal()"></button>
+      </div>
+      
+      <!-- Cuerpo -->
+      <div class="modal-body p-4">
+        <form (submit)="onLogin($event)">
+          <div class="mb-3">
+            <label for="loginUsername" class="form-label text-dark">Correo electrónico</label>
+            <input type="text" class="form-control form-control-lg rounded-pill border-2"
+                   id="loginUsername" name="username" placeholder="usuario@correo.com" required
+                   [(ngModel)]="username" #email="ngModel">
+          </div>
+
+          <div class="mb-3">
+            <label for="loginPassword" class="form-label text-dark">Contraseña</label>
+            <input type="password" class="form-control form-control-lg rounded-pill border-2"
+                   id="loginPassword" name="password" placeholder="Contraseña" required minlength="4"
+                   [(ngModel)]="password" #passwordField="ngModel">
+          </div>
+
+          <div class="d-grid gap-2">
+            <button type="submit" class="btn btn-dark btn-lg rounded-pill shadow-sm hover-shadow-lg">Entrar</button>
+          </div>
+        </form>
+      </div>
+      
+      <!-- Pie -->
+      <div class="modal-footer justify-content-center border-0">
+        <small class="text-muted">¿No tienes cuenta? <a routerLink="/register">Regístrate</a></small>
+      </div>
+    </div>
+  </div>
+</div>
