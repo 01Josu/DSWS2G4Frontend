@@ -1,1 +1,121 @@
-<p>incidencia works!</p>
+<!-- Formulario de incidencia -->
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-10 col-lg-8 mb-4">
+      <div class="card shadow">
+        <div class="card-header text-white bg-dark">
+          <h4 class="mb-0"><i class="bi bi-exclamation-triangle-fill me-2"></i>Registrar Incidencia</h4>
+        </div>
+        <div class="card-body p-4">
+          <form [formGroup]="incidenciaForm" (ngSubmit)="registrarIncidencia()" novalidate>
+            <!-- Mensajes de éxito o error -->
+            <div *ngIf="mensajeExito" class="alert alert-success py-2 mb-3">
+              {{ mensajeExito }}
+            </div>
+            <div *ngIf="mensajeError" class="alert alert-danger py-2 mb-3">
+              {{ mensajeError }}
+            </div>
+
+            <!-- Correo electrónico - Primera Fila -->
+            <div class="row mb-3">
+              <div class="col-12">
+                <label class="form-label">Correo electrónico</label>
+                <input
+                  type="email"
+                  class="form-control form-control-lg"
+                  placeholder="Ingrese su correo"
+                  formControlName="correo"
+                  [ngClass]="{'is-invalid': incidenciaForm.get('correo')?.invalid && incidenciaForm.get('correo')?.touched}">
+                <div class="invalid-feedback">
+                  Ingrese un correo electrónico válido
+                </div>
+              </div>
+            </div>
+
+            <!-- Código de equipo - Segunda Fila -->
+            <div class="row mb-3">
+              <div class="col-12">
+                <label class="form-label">Código de equipo</label>
+                <input
+                  type="text"
+                  class="form-control form-control-lg"
+                  placeholder="Ingrese el código del equipo"
+                  formControlName="codigoEquipo"
+                  [ngClass]="{'is-invalid': incidenciaForm.get('codigoEquipo')?.invalid && incidenciaForm.get('codigoEquipo')?.touched}">
+                <div class="invalid-feedback">
+                  Ingrese el código de equipo
+                </div>
+              </div>
+            </div>
+
+            <!-- Categorías - Tercera Fila con 3 columnas -->
+            <div class="row mb-4">
+              <div class="col-md-4">
+                <label class="form-label">Categoría</label>
+                <select
+                  class="form-select custom-select"
+                  formControlName="categoriaId"
+                  [ngClass]="{'is-invalid': incidenciaForm.get('categoriaId')?.invalid && incidenciaForm.get('categoriaId')?.touched}">
+                  <option value="" disabled selected>Seleccione categoría</option>
+                  <option *ngFor="let cat of categorias" [value]="cat.id">{{cat.nombre}}</option>
+                </select>
+                <div class="invalid-feedback">
+                  Seleccione una categoría
+                </div>
+                <div *ngIf="cargandoCategorias" class="form-text text-dark">
+                  <i class="spinner-border spinner-border-sm me-1"></i> Cargando...
+                </div>
+              </div>
+
+              <div class="col-md-4">
+                <label class="form-label">Subcategoría</label>
+                <select
+                  class="form-select custom-select"
+                  formControlName="subcategoriaId"
+                  [ngClass]="{'is-invalid': incidenciaForm.get('subcategoriaId')?.invalid && incidenciaForm.get('subcategoriaId')?.touched}">
+                  <option value="" disabled selected>Seleccione subcategoría</option>
+                  <option *ngFor="let subcat of subcategorias" [value]="subcat.id">{{subcat.nombre}}</option>
+                </select>
+                <div class="invalid-feedback">
+                  Seleccione una subcategoría
+                </div>
+                <div *ngIf="cargandoSubcategorias" class="form-text text-dark">
+                  <i class="spinner-border spinner-border-sm me-1"></i> Cargando...
+                </div>
+              </div>
+
+              <div class="col-md-4">
+                <label class="form-label">Problema</label>
+                <select
+                  class="form-select custom-select"
+                  formControlName="problemaId"
+                  [ngClass]="{'is-invalid': incidenciaForm.get('problemaId')?.invalid && incidenciaForm.get('problemaId')?.touched}">
+                  <option value="" disabled selected>Seleccione problema</option>
+                  <option *ngFor="let prob of problemas" [value]="prob.id">{{prob.descripcion}}</option>
+                </select>
+                <div class="invalid-feedback">
+                  Seleccione un problema
+                </div>
+                <div *ngIf="cargandoProblemas" class="form-text text-dark">
+                  <i class="spinner-border spinner-border-sm me-1"></i> Cargando...
+                </div>
+              </div>
+            </div>
+
+            <!-- Botón de envío (sin icono) -->
+            <div class="d-grid">
+              <button
+                type="submit"
+                class="btn btn-dark"
+                [disabled]="incidenciaForm.invalid">
+                Registrar Incidencia
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="flex-grow-1"></div>

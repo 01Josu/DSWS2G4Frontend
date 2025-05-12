@@ -1,40 +1,72 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { Observable, tap, catchError, throwError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = 'http://localhost:8080/auth'; // Endpoint base
+  private apiUrl = 'http://localhost:8080';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
-  // Método de login
-  login(credentials: { username: string, password_hash: string }): Observable<any> {
-    const body = {
-      username: credentials.username,        // lo que espera tu backend
-      password_hash: credentials.password_hash // lo que espera tu backend
-    };
-    return this.http.post(`${this.apiUrl}/login`, body);
+  login(loginData: any): Observable<any> {
+    console.log('Enviando solicitud de login:', loginData);
+    return this.http.post<any>(`${this.apiUrl}/auth/login`, loginData)
+      .pipe(
+        tap(response => {
+          console.log('Respuesta login:', response);
+          if (response.token) {
+            this.saveToken(response.token);
+            localStorage.setItem('loginResponse', JSON.stringify(response));
+          }
+        }),
+        catchError(this.handleError)
+      );
   }
 
-  // Método de registro
-  register(data: { nombre: string, username: string, password_hash: string }): Observable<any> {
-    return this.http.post(`${this.apiUrl}/registro`, data);
+  register(registroData: any): Observable<any> {
+    console.log('Enviando solicitud de registro:', registroData);
+    return this.http.post<any>(`${this.apiUrl}/auth/register`, registroData)
+      .pipe(
+        catchError(this.handleError)
+      );
   }
-  // Guardar el token JWT en el localStorage
+
   saveToken(token: string): void {
-    localStorage.setItem('authToken', token);
+    localStorage.setItem('token', token);
   }
 
-  // Obtener el token JWT del localStorage
   getToken(): string | null {
-    return localStorage.getItem('authToken');
+    return localStorage.getItem('token');
   }
 
-  // Cerrar sesión y eliminar el token
+  isLoggedIn(): boolean {
+    return !!this.getToken();
+  }
+
   logout(): void {
-    localStorage.removeItem('authToken');
+    localStorage.removeItem('token');
+    localStorage.removeItem('loginResponse');
+  }
+
+  private handleError(error: HttpErrorResponse) {
+    console.error('Error en la solicitud HTTP:', error);
+
+    let errorMessage = 'Ha ocurrido un error en la comunicación con el servidor.';
+
+    if (error.status === 0) {
+      errorMessage = 'No se pudo conectar con el servidor. Verifique su conexión a internet.';
+    } else if (error.status === 401) {
+      errorMessage = 'Credenciales incorrectas. Por favor, verifique usuario y contraseña.';
+    } else if (error.status === 403) {
+      errorMessage = 'Acceso denegado. No tiene permisos para acceder.';
+    } else if (error.status === 404) {
+      errorMessage = 'El servicio de autenticación no está disponible.';
+    } else if (error.error && error.error.message) {
+      errorMessage = error.error.message;
+    }
+
+    return throwError(() => new Error(errorMessage));
   }
 }

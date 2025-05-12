@@ -14,9 +14,9 @@ import { HttpClientModule } from '@angular/common/http';
 })
 export class RegisterComponent {
   constructor(private authService: AuthService, private router: Router) {}
-    closeModal() {
-      this.router.navigate(['/']); // redirige al home
-    }
+  closeModal() {
+    this.router.navigate(['/']); // redirige al home
+  }
 
   onRegister(event: Event): void {
     event.preventDefault();

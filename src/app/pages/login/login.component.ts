@@ -26,26 +26,32 @@ export class LoginComponent {
 
     // Aquí usamos las propiedades del componente en lugar de buscar los elementos directamente
     const loginData = {
-      username: this.username, // correo electrónico
-      password_hash: this.password // contraseña en texto claro
+      username: this.username,
+      password_hash: this.password
     };
 
     this.authService.login(loginData).subscribe({
       next: (response) => {
         this.authService.saveToken(response.token);
         console.log('Token guardado:', response.token);
+        console.log('Respuesta completa:', response);
+
+        // Guardar respuesta completa en localStorage
+        localStorage.setItem('loginResponse', JSON.stringify(response));
+
         alert('Inicio de sesión exitoso');
-        this.router.navigate(['/home']); // redirige a la página principal
-        this.closeModal();
+
+        // Verificar si es técnico y redirigir según el rol
+        if (response.rol === 'TECNICO') {
+          this.router.navigate(['/tecnico/incidencias']);
+        } else {
+          this.router.navigate(['/home']);
+        }
       },
       error: (err) => {
         alert('Error de inicio de sesión');
         console.error(err);
       }
     });
-    console.log("Email en onLogin():", this.username);
-    console.log("Password:", this.password);
-    
-
   }
 }

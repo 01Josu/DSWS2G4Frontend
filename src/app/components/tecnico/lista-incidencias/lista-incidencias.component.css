@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
 :host {
   display: flex;
   flex-direction: column;
@@ -12,19 +13,33 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.navbar-brand.fw-bold {
+.navbar-brand {
+  font-size: 1.25rem;
   font-weight: 700 !important;
+  padding-top: 0.3125rem;
+  padding-bottom: 0.3125rem;
+  margin-right: 1rem;
 }
 
-.nav-link {
-  transition: all 0.2s ease;
+.navbar-nav .nav-link {
+  padding-right: 0.5rem;
+  padding-left: 0.5rem;
+  font-size: 1rem;
 }
 
-.nav-link.active {
+.navbar-dark .navbar-nav .nav-link.active {
   font-weight: 600;
+  color: #fff;
 }
 
-/* Estilos del formulario */
+.navbar-dark .navbar-nav .nav-link {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.navbar-dark .navbar-nav .nav-link:hover {
+  color: #fff;
+}
+
 .card {
   background: #f8f9fa;
   border-radius: 15px;
@@ -57,6 +72,17 @@
   box-shadow: 0 0 0 0.25rem rgba(53, 130, 185, 0.25);
 }
 
+/* Arreglamos el problema de la doble flecha en los selects */
+.custom-select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 16px 12px;
+}
+
 .btn-dark {
   background-color: #343a40;
   border: none;
@@ -77,24 +103,15 @@
   color: #343a40;
 }
 
-/* Estilos para los select */
-.form-select {
-  -webkit-appearance: menulist;
-  -moz-appearance: menulist;
-  appearance: menulist;
-  color: #212529 !important;
-}
-
-.form-select option {
-  color: #212529 !important;
-}
-
 .alert {
   border-radius: 10px;
   font-weight: 500;
 }
 
-/* Footer */
 footer {
   width: 100%;
+}
+
+body, button, input, select, textarea {
+  font-family: 'Roboto', sans-serif;
 }
