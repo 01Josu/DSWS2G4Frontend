@@ -27,7 +27,7 @@ export class AuthService {
 
   register(registroData: any): Observable<any> {
     console.log('Enviando solicitud de registro:', registroData);
-    return this.http.post<any>(`${this.apiUrl}/auth/register`, registroData)
+    return this.http.post<any>(`${this.apiUrl}/auth/registro`, registroData)
       .pipe(
         catchError(this.handleError)
       );
