@@ -1,0 +1,75 @@
+<div class="container mt-5">
+  <div class="row">
+    <!-- Formulario de Asignación -->
+    <div class="col-lg-6 mb-4">
+      <div class="card shadow">
+        <div class="card-header text-white bg-dark">
+          <h4 class="mb-0"><i class="bi bi-person-check me-2"></i>Asignar Técnico a Incidencia</h4>
+        </div>
+        <div class="card-body p-4">
+          <!-- Mensaje -->
+          <div *ngIf="mensaje" class="alert alert-info py-2 mb-3">
+            {{ mensaje }}
+          </div>
+
+          <!-- Selección de incidencia -->
+          <div class="mb-3">
+            <label class="form-label">Seleccionar Incidencia</label>
+            <select class="form-select" [(ngModel)]="incidenciaSeleccionadaId">
+              <option [ngValue]="null" disabled selected>-- Selecciona una incidencia --</option>
+              <option *ngFor="let inc of incidencias" [value]="inc.id">
+                {{inc.id}} - {{ inc.problemaSubcategoria.descripcionProblema }} - {{ inc.usuarioSolicitante.correoNumero }}
+              </option>
+            </select>
+          </div>
+
+          <!-- Selección de técnico -->
+          <div class="mb-3">
+            <label class="form-label">Seleccionar Técnico</label>
+            <select class="form-select" [(ngModel)]="tecnicoSeleccionadoId">
+              <option [ngValue]="null" disabled selected>-- Selecciona un técnico --</option>
+              <option *ngFor="let tecnico of tecnicos" [value]="tecnico.id">
+                {{ tecnico.empleado.nombre }} (Tickets: {{ tecnico.cargaActual }})
+              </option>
+            </select>
+          </div>
+
+          <!-- Botón -->
+          <div class="d-grid mt-4">
+            <button class="btn btn-dark" (click)="asignarTecnico()">Asignar Técnico</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabla de técnicos disponibles -->
+    <div class="col-lg-6 mb-4">
+      <div class="card shadow">
+        <div class="card-header text-white bg-secondary">
+          <h4 class="mb-0"><i class="bi bi-people-fill me-2"></i>Disponibilidad de Técnicos</h4>
+        </div>
+        <div class="card-body p-4">
+          <div class="table-responsive">
+            <table class="table table-hover table-bordered align-middle">
+              <thead class="table-dark text-center">
+                <tr>
+                  <th>Código</th>
+                  <th>Nombre</th>
+                  <th>Tickets Asignados</th>
+                </tr>
+              </thead>
+              <tbody class="text-center">
+                <tr *ngFor="let tecnico of tecnicos">
+                  <td>{{ tecnico.id }}</td>
+                  <td>{{ tecnico.empleado.nombre }}</td>
+                  <td>{{ tecnico.cargaActual }}</td>
+                </tr>
+              </tbody>
+            </table>
+            <div *ngIf="tecnicos.length === 0" class="text-muted text-center">No hay técnicos disponibles.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -125,6 +125,67 @@ export class IncidenciaService {
       );
   }
 
+  getIncidenciasNoAsignadas(): Observable<IncidenciaInterface[]> {
+    const url = `${this.apiUrl}/asignacion/no-asignadas`;
+    const token = localStorage.getItem('token');
+
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+
+    return this.http.get<IncidenciaInterface[]>(url, { headers }).pipe(
+      map(response => {
+        if (Array.isArray(response)) {
+          return response;
+        }
+        return [];
+      }),
+      catchError(error => {
+        console.error('Error al obtener incidencias no asignadas:', error);
+
+        if (error.status === 0) {
+          console.error('Error de conexión al servidor.');
+        } else {
+          console.error('Código de estado:', error.status);
+          console.error('Mensaje de error:', error.error);
+        }
+
+        return this.handleError(error);
+      })
+    );
+  }
+
+
+  asignarTecnico(idIncidencia: number, idTecnico: number): Observable<any> {
+    const url = `http://localhost:8080/api/v1/asignacion`;
+    const body = { idIncidencia, idTecnico };
+
+    return this.http.post(url, body).pipe(
+      catchError(error => {
+        console.error('Error al asignar técnico:', error);
+
+        if (error.status === 0) {
+          console.error('Error de conexión al servidor.');
+        } else {
+          console.error('Código de estado:', error.status);
+          console.error('Mensaje de error:', error.error);
+        }
+
+        return this.handleError(error);
+      })
+    );
+  }
+
+  getIncidenciaPorId(id: number): Observable<IncidenciaInterface> {
+    return this.http.get<IncidenciaInterface>(`${this.apiUrl}/incidencias/publica/${id}`);
+  }
+
+  enviarAlerta(alerta: { idIncidencia: number; motivo: string }): Observable<any> {
+    return this.http.post(`${this.apiUrl}/incidencias/alerta`, alerta)
+      .pipe(catchError(this.handleError));
+  }
+
+
   private handleError(error: HttpErrorResponse) {
     console.error('Error en la solicitud HTTP:', error);
 
