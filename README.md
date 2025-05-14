@@ -1,59 +1,27 @@
-# FrontendIncidencias
+# Sistema de Gestión de Incidencias – Frontend
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.6.
+Este repositorio contiene el **frontend** del proyecto _Sistema de Gestión de Incidencias de Soporte Técnico_, desarrollado en **Angular**. La aplicación permite a los usuarios registrar incidencias, asignarlas a técnicos, hacer seguimiento del estado de atención y generar reportes técnicos, todo desde una interfaz web moderna e intuitiva.
 
-## Development server
+## Descripción
 
-To start a local development server, run:
+Este sistema fue desarrollado como parte de un proyecto colaborativo con fines académicos y profesionales, utilizando el framework ágil **Scrum**. El frontend consume servicios REST del backend (Spring Boot) para gestionar datos relacionados con incidencias, usuarios, técnicos y equipos de cómputo.
 
-```bash
-ng serve
-```
+## Tecnologías utilizadas
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+- Angular 17+
+- HTML5 / CSS3
+- TypeScript
+- Bootstrap 5
+- RxJS
+- Consumo de APIs REST con HttpClientModule
 
-## Code scaffolding
+## Funcionalidades principales
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+- Inicio de sesión con autenticación JWT
+- Registro de incidencias por usuarios
+- Visualización y gestión de incidencias asignadas
+- Filtros y búsqueda de historial por equipo o estado
+- Reportes dinámicos del estado de los equipos
+- Navegación protegida por roles de usuario
 
-```bash
-ng generate component component-name
-```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
