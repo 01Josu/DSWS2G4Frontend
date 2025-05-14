@@ -1,10 +1,16 @@
 export interface IncidenciaInterface {
-  idIncidencia: number;
+  id: number;
   correoSolicitante: string;
   codigoEquipo: string;
   fechaRegistro: string;
   descripcionProblema: string;
   estado: string;
   prioridad: number;
+  problemaSubcategoria: {
+    descripcionProblema: string;
+  };
+  usuarioSolicitante: {
+    correoNumero: string;
+  };
 }
 

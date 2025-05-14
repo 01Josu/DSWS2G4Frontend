@@ -44,7 +44,9 @@ export class LoginComponent {
         // Verificar si es técnico y redirigir según el rol
         if (response.rol === 'TECNICO') {
           this.router.navigate(['/tecnico/incidencias']);
-        } else {
+        } else if(response.rol === 'JEFE_AREA'){
+          this.router.navigate(['/asignar-incidencia'])
+        }else {
           this.router.navigate(['/home']);
         }
       },

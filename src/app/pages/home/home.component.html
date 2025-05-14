@@ -1,11 +1,51 @@
 <header class="bg-light text-dark py-5 fade-in">
   <div class="container text-center">
     <h1 class="display-4 fw-bold animate__animated animate__fadeInUp">Bienvenidos a Incidencias SAC</h1>
-    <p class="lead animate__animated animate__fadeInUp animate__delay-1s">Optimiza tu atención al cliente con nuestro sistema de gestión de incidencias</p>
+
+    <!-- Campo de búsqueda de incidencia -->
+    <div class="d-flex justify-content-center mt-3 animate__animated animate__fadeInUp animate__delay-1s">
+      <div class="input-group input-group-lg" style="max-width: 500px;">
+        <input
+          type="number"
+          [(ngModel)]="codigoBusqueda"
+          class="form-control"
+          placeholder="Buscar ID de incidencia"
+          aria-label="Buscar incidencia"
+        >
+        <button class="btn btn-dark" type="button" (click)="buscarIncidencia()">
+          <i class="bi bi-search"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Resultado encontrado -->
+    <div *ngIf="incidenciaEncontrada" class="alert alert-info mt-4 text-start mx-auto animate__animated animate__fadeInUp" style="max-width: 600px;">
+      <h5>Detalles de la Incidencia #{{ incidenciaEncontrada.id }}</h5>
+      <p><strong>Estado:</strong> {{ incidenciaEncontrada.estado }}</p>
+      <p><strong>Fecha de Registro:</strong> {{ incidenciaEncontrada.fechaRegistro | date: 'dd/MM/yyyy' }}</p>
+      <p><strong>Correo del Solicitante:</strong> {{ incidenciaEncontrada.correoSolicitante }}</p>
+      <p><strong>Descripción del Problema:</strong> {{ incidenciaEncontrada.descripcionProblema }}</p>
+      <div class="mt-3 text-center">
+        <button class="btn btn-danger" (click)="enviarAlerta()">
+          <i class="bi bi-exclamation-triangle-fill me-1"></i> Enviar Alerta de Atención
+        </button>
+      </div>
+    </div>
+
+    <!-- Mensaje de error -->
+    <div *ngIf="mensajeBusqueda" class="alert alert-warning mt-4 mx-auto text-center animate__animated animate__fadeInUp" style="max-width: 500px;">
+      {{ mensajeBusqueda }}
+    </div>
+
+    <p class="lead animate__animated animate__fadeInUp animate__delay-1s">
+      Optimiza tu atención al cliente con nuestro sistema de gestión de incidencias
+    </p>
+
     <img src="image.png" alt="Banner" class="img-fluid rounded shadow mt-4 animate__animated animate__fadeInUp">
   </div>
 </header>
 
+<!-- Sección Sobre Nosotros -->
 <section class="container py-5 fade-in animate__animated animate__fadeInUp animate__delay-2s">
   <div class="row text-center mb-5">
     <div class="col">
@@ -95,18 +135,16 @@
       </div>
       <div class="col-md-4">
         <div class="testimonial">
-          <p class="lead">"Gracias a esta solución, hemos reducido los tiempos de respuesta y hemos optimizado los recursos." </p>
+          <p class="lead">"Gracias a esta solución, hemos reducido los tiempos de respuesta y hemos optimizado los recursos."</p>
           <footer>- Ana Torres, Coordinadora de TI</footer>
         </div>
       </div>
       <div class="col-md-4">
         <div class="testimonial">
-          <p class="lead">"La interfaz es muy amigable y el proceso de gestión de incidencias nunca fue tan fácil de implementar." </p>
+          <p class="lead">"La interfaz es muy amigable y el proceso de gestión de incidencias nunca fue tan fácil de implementar."</p>
           <footer>- Carlos Sánchez, Jefe de Servicios</footer>
         </div>
       </div>
     </div>
   </div>
 </section>
-
-
