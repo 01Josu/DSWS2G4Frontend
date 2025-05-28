@@ -1,0 +1,129 @@
+<div class="container my-5 p-4 bg-white rounded shadow-lg">
+
+  <div *ngIf="incidencia; else cargandoOError" class="mt-4">
+
+    <!-- Card detalle incidencia -->
+    <div class="card border-primary mb-4 shadow-sm">
+      <div class="card-header bg-primary text-white d-flex align-items-center gap-2">
+        <i class="bi bi-info-circle-fill fs-4"></i>
+        <h4 class="mb-0">Detalle de la Incidencia #{{ incidencia.idIncidencia }}</h4>
+      </div>
+      <div class="card-body">
+        <div class="row gy-2">
+          <div class="col-md-6">
+            <i class="bi bi-envelope-fill text-primary me-2"></i>
+            <strong>Correo solicitante:</strong> {{ incidencia.correoSolicitante }}
+          </div>
+          <div class="col-md-6">
+            <i class="bi bi-hdd-network-fill text-primary me-2"></i>
+            <strong>Código equipo:</strong> {{ incidencia.codigoEquipo }}
+          </div>
+          <div class="col-md-6">
+            <i class="bi bi-calendar-check-fill text-primary me-2"></i>
+            <strong>Fecha registro:</strong> {{ incidencia.fechaRegistro | date:'medium' }}
+          </div>
+          <div class="col-md-6">
+            <i class="bi bi-exclamation-triangle-fill text-warning me-2"></i>
+            <strong>Estado:</strong> 
+            <span [ngClass]="{
+              'badge bg-success': incidencia.estado === 'solucionado',
+              'badge bg-warning text-dark': incidencia.estado === 'en proceso',
+              'badge bg-secondary': incidencia.estado === 'pendiente'
+            }">{{ incidencia.estado | titlecase }}</span>
+          </div>
+          <div class="col-12">
+            <i class="bi bi-card-text text-primary me-2"></i>
+            <strong>Descripción problema:</strong> {{ incidencia.descripcionProblema }}
+          </div>
+          <div class="col-md-6">
+            <i class="bi bi-speedometer2 text-primary me-2"></i>
+            <strong>Prioridad:</strong> {{ getPrioridadTexto(incidencia.prioridad)| titlecase }}
+          </div>
+          <div class="col-md-6">
+            <i class="bi bi-tags-fill text-primary me-2"></i>
+            <strong>Categoría problema:</strong> {{ incidencia.categoriaProblema }}
+          </div>
+          <div class="col-md-6">
+            <i class="bi bi-tag-fill text-primary me-2"></i>
+            <strong>Subcategoría:</strong> {{ incidencia.subCategoria }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mensajes -->
+    <div *ngIf="mensajeExito" class="alert alert-success d-flex align-items-center gap-2">
+      <i class="bi bi-check-circle-fill fs-4"></i>
+      {{ mensajeExito }}
+    </div>
+    <div *ngIf="error" class="alert alert-danger d-flex align-items-center gap-2">
+      <i class="bi bi-exclamation-octagon-fill fs-4"></i>
+      {{ error }}
+    </div>
+
+    <!-- Formulario registro solución -->
+    <form (ngSubmit)="registrarSolucion()" class="row g-4">
+
+      <div class="col-md-6">
+        <label for="selectSolucion" class="form-label fw-semibold">
+          <i class="bi bi-wrench-adjustable-circle me-1"></i> Solución
+        </label>
+        <select id="selectSolucion" class="form-select" [(ngModel)]="solucionRequest.idSolucion" name="idSolucion" required>
+          <option value="" disabled>Seleccione una solución</option>
+          <option *ngFor="let sol of soluciones" [value]="sol.idSolucion">
+            {{ sol.solucion }}
+          </option>
+        </select>
+      </div>
+
+      <div class="col-md-6">
+        <label for="inputPalabrasClave" class="form-label fw-semibold">
+          <i class="bi bi-key-fill me-1"></i> Palabras clave
+        </label>
+        <input id="inputPalabrasClave" type="text" class="form-control" [(ngModel)]="solucionRequest.palabrasClave" name="palabrasClave" placeholder="Ingrese palabras clave" required>
+      </div>
+
+      <div class="col-md-6">
+        <label for="selectModalidad" class="form-label fw-semibold">
+          <i class="bi bi-telephone-fill me-1"></i> Modalidad de atención
+        </label>
+        <select id="selectModalidad" class="form-select" [(ngModel)]="solucionRequest.modalidadAtencion" name="modalidadAtencion" required>
+          <option value="" disabled>Seleccione modalidad</option>
+          <option value="remoto">Remoto</option>
+          <option value="taller">Taller</option>
+        </select>
+      </div>
+
+      <div class="col-md-6">
+        <label for="selectEstado" class="form-label fw-semibold">
+          <i class="bi bi-info-circle-fill me-1"></i> Estado
+        </label>
+        <select id="selectEstado" class="form-select" [(ngModel)]="solucionRequest.estado" name="estado" required>
+          <option value="" disabled>Seleccione estado</option>
+          <option value="solucionado">Solucionado</option>
+          <option value="en proceso">En proceso</option>
+          <option value="pendiente">Pendiente</option>
+        </select>
+      </div>
+
+      <div class="col-12 text-end">
+        <button type="submit" class="btn btn-primary px-4 py-2 fw-semibold shadow-sm">
+          <i class="bi bi-save2-fill me-2"></i> Registrar solución
+        </button>
+      </div>
+
+    </form>
+
+  </div>
+
+  <ng-template #cargandoOError>
+    <div *ngIf="cargando" class="text-center mt-4">
+      <div class="spinner-border text-primary" role="status"><span class="visually-hidden">Cargando...</span></div>
+    </div>
+    <div *ngIf="!cargando && error" class="alert alert-danger mt-4 d-flex align-items-center gap-2">
+      <i class="bi bi-exclamation-octagon-fill fs-4"></i>
+      {{ error }}
+    </div>
+  </ng-template>
+
+</div>

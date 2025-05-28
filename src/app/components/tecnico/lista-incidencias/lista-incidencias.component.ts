@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { IncidenciaService } from '../../../services/incidencia.service';
 import { IncidenciaInterface } from '../../../interfaces/incidencia.interface';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-lista-incidencias',
@@ -20,7 +21,8 @@ export class ListaIncidenciasComponent implements OnInit {
   error: string = '';
 
   constructor(
-    private incidenciaService: IncidenciaService
+    private incidenciaService: IncidenciaService,
+    private router: Router
   ) {}
 
   ngOnInit() {
@@ -97,4 +99,10 @@ export class ListaIncidenciasComponent implements OnInit {
     if (prioridad >= 5) return 'bg-warning';
     return 'bg-info';
   }
+  
+  verDetalles(incidencia: IncidenciaInterface) {
+    console.log('Navegando a detalles de incidencia:', incidencia.idIncidencia);
+    this.router.navigate(['/detalle-incidencia', incidencia.idIncidencia]);
+  }
+
 }

@@ -6,6 +6,7 @@ import { IncidenciaComponent } from './pages/incidencia/incidencia.component';
 import { ListaIncidenciasComponent } from './components/tecnico/lista-incidencias/lista-incidencias.component';
 import { RolJefeGuard } from './guard/rol-jefe.guard';
 import { AsignarIncidenciaComponent } from './pages/asignar-incidencia/asignar-incidencia.component';
+import { DetalleIncidenciaComponent } from './detalle-incidencia/detalle-incidencia.component'; // 👈 Asegúrate de importar
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -13,5 +14,6 @@ export const routes: Routes = [
   { path: 'register', component: RegisterComponent },
   { path: 'incidencia', component: IncidenciaComponent },
   { path: 'tecnico/incidencias', component: ListaIncidenciasComponent },
+  { path: 'detalle-incidencia/:id', component: DetalleIncidenciaComponent },
   { path: 'asignar-incidencia', component: AsignarIncidenciaComponent, canActivate: [RolJefeGuard]}
 ];

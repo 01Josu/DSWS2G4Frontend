@@ -15,9 +15,9 @@
           <!-- Selección de incidencia -->
           <div class="mb-3">
             <label class="form-label">Seleccionar Incidencia</label>
-            <select class="form-select" [(ngModel)]="incidenciaSeleccionadaId">
+            <select class="form-select" [(ngModel)]="incidenciaSeleccionadaId" name="incidencia">
               <option [ngValue]="null" disabled selected>-- Selecciona una incidencia --</option>
-              <option *ngFor="let inc of incidencias" [value]="inc.id">
+              <option *ngFor="let inc of incidencias" [ngValue]="inc.id">
                 {{inc.id}} - {{ inc.problemaSubcategoria.descripcionProblema }} - {{ inc.usuarioSolicitante.correoNumero }}
               </option>
             </select>

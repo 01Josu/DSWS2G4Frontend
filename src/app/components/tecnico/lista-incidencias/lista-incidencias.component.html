@@ -62,7 +62,7 @@
               </thead>
               <tbody>
               <tr *ngFor="let incidencia of incidencias" class="align-middle">
-                <td><span class="badge bg-secondary">{{incidencia.id}}</span></td>
+                <td><span class="badge bg-secondary">{{incidencia.idIncidencia}}</span></td>
                 <td>{{incidencia.correoSolicitante}}</td>
                 <td>{{incidencia.codigoEquipo}}</td>
                 <td>{{incidencia.fechaRegistro | date:'dd/MM/yyyy HH:mm'}}</td>
@@ -79,7 +79,7 @@
                 </td>
                 <td>
                   <div class="btn-group">
-                    <button class="btn btn-sm btn-primary">
+                    <button class="btn btn-sm btn-primary" (click)="verDetalles(incidencia)">
                       <i class="bi bi-eye"></i>
                     </button>
                     <button class="btn btn-sm btn-success ms-1">

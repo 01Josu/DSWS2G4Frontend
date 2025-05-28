@@ -39,10 +39,10 @@ export class HomeComponent {
   }
 
   enviarAlerta(): void {
-    if (!this.incidenciaEncontrada?.id) return;
+    if (!this.incidenciaEncontrada?.idIncidencia ) return;
 
     const alerta = {
-      idIncidencia: this.incidenciaEncontrada.id,
+      idIncidencia: this.incidenciaEncontrada.idIncidencia ,
       motivo: 'Tiempo de atención excedido'
     };
 

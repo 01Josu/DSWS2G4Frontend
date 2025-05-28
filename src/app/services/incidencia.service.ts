@@ -6,6 +6,7 @@ import { RegistroIncidenciaInterface } from '../interfaces/registro-incidencia.i
 import { CategoriaInterface } from '../interfaces/categoria.interface';
 import { SubcategoriaInterface } from '../interfaces/subcategoria.interface';
 import { ProblemaInterface } from '../interfaces/problema.interface';
+import { SolucionRequest } from '../interfaces/Solucion.Interface';
 
 @Injectable({
   providedIn: 'root'
@@ -160,7 +161,9 @@ export class IncidenciaService {
     const url = `http://localhost:8080/api/v1/asignacion`;
     const body = { idIncidencia, idTecnico };
 
-    return this.http.post(url, body).pipe(
+    return this.http.post<string>(url, body, {
+      responseType: 'text' as 'json'  // ✅ ACEPTA texto plano del backend
+    }).pipe(
       catchError(error => {
         console.error('Error al asignar técnico:', error);
 
@@ -168,7 +171,7 @@ export class IncidenciaService {
           console.error('Error de conexión al servidor.');
         } else {
           console.error('Código de estado:', error.status);
-          console.error('Mensaje de error:', error.error);
+          console.error('Mensaje de error:', error.error); // aquí también será texto
         }
 
         return this.handleError(error);
@@ -176,6 +179,8 @@ export class IncidenciaService {
     );
   }
 
+  
+  // Obtener la incidencia
   getIncidenciaPorId(id: number): Observable<IncidenciaInterface> {
     return this.http.get<IncidenciaInterface>(`${this.apiUrl}/incidencias/publica/${id}`);
   }
@@ -205,4 +210,21 @@ export class IncidenciaService {
 
     return throwError(() => new Error(errorMessage));
   }
+
+  actualizarIncidencia(incidencia: IncidenciaInterface): Observable<any> {
+    const url = `${this.apiUrl}/incidencias/${incidencia.idIncidencia}`; // Ajusta la URL según tu backend
+    return this.http.put(url, incidencia)
+      .pipe(catchError(this.handleError));
+  }
+  
+  // Obtener soluciones disponibles para una incidencia
+  obtenerSolucionesPorId(idIncidencia: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/incidencias/${idIncidencia}/soluciones`);
+  }
+
+  // Registrar una solución aplicada a una incidencia
+  registrarSolucion(request: SolucionRequest): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/solucion`, request);
+  }
+
 }

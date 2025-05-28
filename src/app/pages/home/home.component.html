@@ -20,7 +20,7 @@
 
     <!-- Resultado encontrado -->
     <div *ngIf="incidenciaEncontrada" class="alert alert-info mt-4 text-start mx-auto animate__animated animate__fadeInUp" style="max-width: 600px;">
-      <h5>Detalles de la Incidencia #{{ incidenciaEncontrada.id }}</h5>
+      <h5>Detalles de la Incidencia #{{ incidenciaEncontrada.idIncidencia }}</h5>
       <p><strong>Estado:</strong> {{ incidenciaEncontrada.estado }}</p>
       <p><strong>Fecha de Registro:</strong> {{ incidenciaEncontrada.fechaRegistro | date: 'dd/MM/yyyy' }}</p>
       <p><strong>Correo del Solicitante:</strong> {{ incidenciaEncontrada.correoSolicitante }}</p>

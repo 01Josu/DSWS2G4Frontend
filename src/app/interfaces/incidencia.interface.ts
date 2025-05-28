@@ -1,16 +1,20 @@
 export interface IncidenciaInterface {
-  id: number;
+  idIncidencia?: number;
+  id?: number;
   correoSolicitante: string;
   codigoEquipo: string;
   fechaRegistro: string;
   descripcionProblema: string;
   estado: string;
   prioridad: number;
+  categoriaProblema: String;
+  subCategoria:String;
+
   problemaSubcategoria: {
-    descripcionProblema: string;
-  };
+    "descripcionProblema": "Pantalla no enciende"
+  },
   usuarioSolicitante: {
-    correoNumero: string;
-  };
+    "correoNumero": "usuario@email.com"
+  },
 }
 

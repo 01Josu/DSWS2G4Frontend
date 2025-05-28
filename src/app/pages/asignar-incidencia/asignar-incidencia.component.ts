@@ -60,6 +60,8 @@ export class AsignarIncidenciaComponent implements OnInit {
   }
 
   asignarTecnico(): void {
+    console.log('Incidencia seleccionada:', this.incidenciaSeleccionadaId);
+    console.log('Técnico seleccionado:', this.tecnicoSeleccionadoId);
     if (this.incidenciaSeleccionadaId && this.tecnicoSeleccionadoId) {
       this.incidenciaService.asignarTecnico(
         this.incidenciaSeleccionadaId,
