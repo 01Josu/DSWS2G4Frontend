@@ -60,3 +60,25 @@
   text-decoration: underline;
   color: #0056b3;
 }
+
+.role-card {
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 2px solid #dee2e6;
+  background-color: #f8f9fa;
+  width: 30%;
+  min-width: 140px;
+  user-select: none;
+}
+
+.role-card:hover {
+  border-color: #343a40;
+  background-color: #e2e6ea;
+}
+
+.role-card.selected {
+  border-color: #343a40;
+  background-color: #343a40;
+  color: white;
+  font-weight: bold;
+}

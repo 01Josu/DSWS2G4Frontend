@@ -13,9 +13,14 @@ import { HttpClientModule } from '@angular/common/http';
   styleUrl: './register.component.css'
 })
 export class RegisterComponent {
+  selectedRole: string = '';
   constructor(private authService: AuthService, private router: Router) {}
   closeModal() {
     this.router.navigate(['/']); // redirige al home
+  }
+  // Función para seleccionar el rol
+  selectRole(role: string): void {
+    this.selectedRole = role;
   }
 
   onRegister(event: Event): void {
@@ -31,10 +36,16 @@ export class RegisterComponent {
       return;
     }
 
+    if (!this.selectedRole) {
+      alert('Debes seleccionar un rol');
+      return;
+    }
+
     const registroData = {
       nombre,
       username: email,
-      password_hash: password
+      password_hash: password,
+      role: this.selectedRole
     };
 
     this.authService.register(registroData).subscribe({

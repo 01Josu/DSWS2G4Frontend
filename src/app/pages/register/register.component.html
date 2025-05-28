@@ -36,6 +36,31 @@
             <input type="password" class="form-control form-control-lg rounded-pill border-2" id="confirmPassword" placeholder="Confirmar Contraseña" required minlength="4">
           </div>
 
+          <div class="mb-4">
+            <label class="form-label text-dark d-block mb-2">Selecciona tu rol:</label>
+            <div class="d-flex justify-content-between flex-wrap gap-3">
+              <div 
+                class="role-card p-3 border rounded-3 text-center flex-fill"
+                [class.selected]="selectedRole === 'TECNICO'"
+                (click)="selectRole('TECNICO')">
+                Técnico
+              </div>
+              <div 
+                class="role-card p-3 border rounded-3 text-center flex-fill"
+                [class.selected]="selectedRole === 'LOGISTICA'"
+                (click)="selectRole('LOGISTICA')">
+                Logística
+              </div>
+              <div 
+                class="role-card p-3 border rounded-3 text-center flex-fill"
+                [class.selected]="selectedRole === 'JEFE_AREA'"
+                (click)="selectRole('JEFE_AREA')">
+                Jefe de Área
+              </div>
+            </div>
+          </div>
+
+
           <div class="d-grid gap-2">
             <button type="submit" class="btn btn-dark btn-lg rounded-pill shadow-sm">Registrar</button>
           </div>
