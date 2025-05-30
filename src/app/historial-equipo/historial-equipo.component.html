@@ -1,0 +1,102 @@
+<div class="container mt-5 p-4 bg-white rounded shadow-sm">
+  <h4 class="mb-4 text-primary d-flex align-items-center gap-2">
+    <i class="bi bi-search fs-3"></i> Buscar Historial de Equipos
+  </h4>
+
+  <!-- Formulario búsqueda por código -->
+  <form class="row gy-3 gx-4 align-items-end mb-4" (ngSubmit)="buscarPorCodigo()">
+    <div class="col-md-5">
+      <label for="codigoEquipo" class="form-label fw-semibold">
+        <i class="bi bi-upc-scan"></i> Código de Equipo
+      </label>
+      <input
+        type="text"
+        class="form-control form-control-lg"
+        id="codigoEquipo"
+        [(ngModel)]="codigoEquipo"
+        name="codigoEquipo"
+        placeholder="Ej: EQP-123"
+        autocomplete="off"
+      />
+    </div>
+
+    <div class="col-md-7 d-flex gap-3">
+      <button type="submit" class="btn btn-primary btn-lg rounded-pill shadow-sm btn-hover">
+        <i class="bi bi-search"></i> Buscar por Código
+      </button>
+      <button type="button" class="btn btn-outline-secondary btn-lg rounded-pill shadow-sm btn-hover" (click)="obtenerTodoElHistorial()">
+        <i class="bi bi-card-list"></i> Mostrar Todos
+      </button>
+    </div>
+  </form>
+
+  <!-- Formulario búsqueda por palabra clave -->
+  <form class="row gy-3 gx-4 align-items-end mb-5" (ngSubmit)="buscarPorPalabra()">
+    <div class="col-md-5">
+      <label for="palabraClave" class="form-label fw-semibold">
+        <i class="bi bi-key"></i> Palabra Clave
+      </label>
+      <input
+        type="text"
+        class="form-control form-control-lg"
+        id="palabraClave"
+        [(ngModel)]="palabraClave"
+        name="palabraClave"
+        placeholder="Ej: batería"
+        autocomplete="off"
+      />
+    </div>
+
+    <div class="col-md-7 d-flex">
+      <button type="submit" class="btn btn-info btn-lg rounded-pill shadow-sm text-white btn-hover">
+        <i class="bi bi-search-heart"></i> Buscar por Palabra
+      </button>
+    </div>
+  </form>
+
+  <!-- Resultados -->
+  <div *ngIf="resultados.length > 0">
+    <div class="card border-primary shadow-sm">
+      <div class="card-header bg-primary text-white fw-bold d-flex align-items-center gap-2">
+        <i class="bi bi-table fs-5"></i> Resultados
+      </div>
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-striped table-hover align-middle mb-0" style="min-width: 900px;">
+                <thead class="table-primary text-center">
+                    <tr>
+                        <th class="th-truncate" title="ID" style="width: 50px;">ID</th>
+                        <th class="th-truncate" title="Código Equipo" style="width: 120px;">Código Equipo</th>
+                        <th class="th-truncate" title="Descripción Problema">Descripción Problema</th>
+                        <th class="th-truncate" title="Nombre Categoría">Nombre Categoría</th>
+                        <th class="th-truncate" title="Nombre Subcategoría">Nombre Subcategoría</th>
+                        <th class="th-truncate" title="Solución Problema">Solución Problema</th>
+                        <th class="th-truncate" title="Palabras Clave">Palabras Clave</th>
+                        <th class="th-truncate" title="Fecha Solución" style="width: 140px;">Fecha Solución</th>
+                    </tr>
+                </thead>
+                <tbody class="text-center">
+                    <tr *ngFor="let item of resultados">
+                    <td>{{ item.id }}</td>
+                    <td>{{ item.codigoEquipo }}</td>
+                    <td class="text-truncate" [title]="item.descripcionProblema">{{ item.descripcionProblema }}</td>
+                    <td>{{ item.nombreCategoria }}</td>
+                    <td>{{ item.nombreSubcategoria }}</td>
+                    <td class="text-truncate" [title]="item.solucionProblema">{{ item.solucionProblema }}</td>
+                    <td>{{ item.palabrasClave }}</td>
+                    <td>{{ item.fechaSolucion | date: 'short' }}</td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mensaje cuando no hay resultados -->
+  <div *ngIf="resultados.length === 0" class="mt-4 alert alert-warning d-flex align-items-center" role="alert">
+    <i class="bi bi-exclamation-triangle me-2"></i>
+    No se encontraron resultados para la búsqueda.
+  </div>
+</div>

@@ -1,0 +1,31 @@
+.btn-hover {
+    transition: all 0.3s ease;
+  }
+  .btn-hover:hover {
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    transform: translateY(-2px);
+  }
+  table.table-hover tbody tr:hover {
+    background-color: #cce5ff;
+  }
+  .card-header {
+    font-size: 1.1rem;
+  }
+
+  .text-truncate {
+  max-width: 150px;      /* ajusta según prefieras */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: help;          /* indica que hay tooltip */
+}
+
+
+.th-truncate {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 120px;  /* ajusta ancho según columna */
+  cursor: help;
+  vertical-align: middle !important; /* para centrar texto vertical */
+}

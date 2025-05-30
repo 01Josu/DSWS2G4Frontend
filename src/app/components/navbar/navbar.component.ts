@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { Router, NavigationStart  } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../pages/auth.service';
 
@@ -10,12 +11,31 @@ import { AuthService } from '../../pages/auth.service';
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.css']
 })
-export class NavbarComponent {
-  constructor(public authService: AuthService) {}
+export class NavbarComponent implements OnInit{
+  private primeraCarga = true;
+  mostrarComoNoLogueado = false;
+  constructor(public authService: AuthService, private router: Router) {}
 
   logout(): void {
     this.authService.logout();
+    this.router.navigate(['/']);
     // No es necesario redireccionar, router-link lo hará
+  }
+
+  ngOnInit() {
+    this.router.events.subscribe(event => {
+      if (event instanceof NavigationStart) {
+        if (this.primeraCarga && event.url === '/') {
+          // Primera carga en ruta "/"
+          this.mostrarComoNoLogueado = true;
+          this.primeraCarga = false;
+        } else {
+          // Cualquier otra navegación o recarga
+          this.mostrarComoNoLogueado = false;
+          this.primeraCarga = false;
+        }
+      }
+    });
   }
 
   getUserRole(): string | null {
@@ -33,5 +53,12 @@ export class NavbarComponent {
 
   isTecnico(): boolean {
     return this.getUserRole() === 'TECNICO';
+  }
+
+  isLoggedIn(): boolean {
+    if (this.mostrarComoNoLogueado) {
+      return false; // fingir no autenticado solo en la primera carga en "/"
+    }
+    return this.authService.isLoggedIn();
   }
 }
