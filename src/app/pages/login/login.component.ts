@@ -33,6 +33,7 @@ export class LoginComponent {
     this.authService.login(loginData).subscribe({
       next: (response) => {
         this.authService.saveToken(response.token);
+        localStorage.setItem('token', response.token);
         console.log('Token guardado:', response.token);
         console.log('Respuesta completa:', response);
 
@@ -46,7 +47,9 @@ export class LoginComponent {
           this.router.navigate(['/tecnico/incidencias']);
         } else if(response.rol === 'JEFE_AREA'){
           this.router.navigate(['/asignar-incidencia'])
-        }else {
+        } else if(response.rol === 'LOGISTICA'){
+          this.router.navigate(['/logistica/repuestos']);
+        } else{
           this.router.navigate(['/home']);
         }
       },

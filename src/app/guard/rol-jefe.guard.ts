@@ -11,7 +11,9 @@ export class RolJefeGuard implements CanActivate {
     const loginResponse = localStorage.getItem('loginResponse');
     const usuario = loginResponse ? JSON.parse(loginResponse) : null;
 
-    if (usuario && usuario.rol === 'JEFE_AREA') {
+    const rolesPermitidos = ['JEFE_AREA', 'LOGISTICA'];
+
+    if (usuario && rolesPermitidos.includes(usuario.rol)) {
       return true;
     }
 
@@ -19,4 +21,3 @@ export class RolJefeGuard implements CanActivate {
     return false;
   }
 }
-

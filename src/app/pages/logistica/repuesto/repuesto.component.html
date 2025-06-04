@@ -1,0 +1,79 @@
+<div class="container py-5">
+  <h2 class="text-center mb-4">Gestión de Repuestos</h2>
+
+  <!-- Botón para abrir el modal -->
+  <div class="text-end mb-3">
+    <button class="btn btn-primary" (click)="nuevoRepuesto()">Nuevo Repuesto</button>
+  </div>
+
+  <!-- Tabla -->
+  <div class="card">
+    <div class="card-header">Repuestos Registrados</div>
+    <div class="card-body">
+      <table class="table table-bordered table-hover">
+        <thead class="table-dark text-center">
+          <tr>
+            <th>ID</th>
+            <th>Código</th>
+            <th>Nombre</th>
+            <th>Descripción</th>
+            <th>Cantidad</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody class="text-center">
+          <tr *ngFor="let repuesto of repuestos">
+            <td>{{ repuesto.id }}</td>
+            <td>{{ repuesto.codigoRepuesto }}</td>
+            <td>{{ repuesto.nombre }}</td>
+            <td>{{ repuesto.descripcion }}</td>
+            <td>{{ repuesto.cantidad }}</td>
+            <td>
+              <button class="btn btn-sm btn-warning me-2" (click)="editarRepuesto(repuesto)"><i class="bi bi-pencil"></i></button>
+              <button class="btn btn-sm btn-danger" (click)="eliminarRepuesto(repuesto.id)"><i class="bi bi-trash"></i></button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Modal para formulario -->
+<div class="modal fade" id="modalRepuesto" tabindex="-1" aria-labelledby="modalRepuestoLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalRepuestoLabel">{{ editando ? 'Editar Repuesto' : 'Nuevo Repuesto' }}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body">
+        <form (ngSubmit)="guardarRepuesto()">
+          <div class="row mb-3">
+            <div class="col">
+              <label class="form-label">Código</label>
+              <input type="text" class="form-control" [(ngModel)]="form.codigoRepuesto" name="codigoRepuesto" required>
+            </div>
+            <div class="col">
+              <label class="form-label">Nombre</label>
+              <input type="text" class="form-control" [(ngModel)]="form.nombre" name="nombre" required>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Descripción</label>
+            <textarea class="form-control" [(ngModel)]="form.descripcion" name="descripcion" rows="2"></textarea>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Cantidad</label>
+            <input type="number" min="0" class="form-control" [(ngModel)]="form.cantidad" name="cantidad" required>
+          </div>
+
+          <button class="btn btn-success me-2" type="submit">{{ editando ? 'Actualizar' : 'Registrar' }}</button>
+          <button *ngIf="editando" class="btn btn-secondary" (click)="cancelarEdicion()" type="button">Cancelar</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
