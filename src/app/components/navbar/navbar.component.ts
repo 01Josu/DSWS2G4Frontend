@@ -55,6 +55,10 @@ export class NavbarComponent implements OnInit{
     return this.getUserRole() === 'TECNICO';
   }
 
+  isLogistica(): boolean {
+    return this.getUserRole() === 'LOGISTICA';
+  }
+
   isLoggedIn(): boolean {
     if (this.mostrarComoNoLogueado) {
       return false; // fingir no autenticado solo en la primera carga en "/"

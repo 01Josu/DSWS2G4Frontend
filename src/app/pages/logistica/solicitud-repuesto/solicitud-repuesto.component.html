@@ -1,0 +1,56 @@
+<div class="container py-5">
+  <h2 class="text-center mb-4">Solicitudes de Repuestos</h2>
+
+  <div class="card">
+    <div class="card-header">Listado de Solicitudes</div>
+    <div class="card-body">
+      <table class="table table-bordered table-hover">
+        <thead class="table-dark text-center">
+          <tr>
+            <th>ID</th>
+            <th>Código Repuesto</th>
+            <th>Nombre Repuesto</th>
+            <th>Cantidad</th>
+            <th>Fecha Solicitud</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody class="text-center">
+          <tr *ngFor="let solicitud of solicitudes">
+            <td>{{ solicitud.id }}</td>
+            <td>{{ solicitud.codigoRepuesto }}</td>
+            <td>{{ solicitud.nombreRepuesto }}</td> 
+            <td>{{ solicitud.cantidad }}</td>
+            <td>{{ solicitud.fechaSolicitud | date: 'short' }}</td>
+            <td>
+              <span 
+                class = "badge"
+                [ngClass]="{ 
+                    'bg-warning': solicitud.estado === 'PENDIENTE',
+                    'bg-success': solicitud.estado === 'ATENDIDO',
+                    'bg-danger': solicitud.estado === 'RECHAZADO'
+                }">
+                {{ solicitud.estado }}
+              </span>
+            </td>
+            <td>
+              <button 
+                class="btn btn-sm btn-success me-2" 
+                (click)="aprobar(solicitud.id)" 
+                [disabled]="solicitud.estado !== 'PENDIENTE'">
+                Aprobar
+              </button>
+              <button 
+                class="btn btn-sm btn-danger" 
+                (click)="rechazar(solicitud.id)" 
+                [disabled]="solicitud.estado !== 'PENDIENTE'">
+                Rechazar
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

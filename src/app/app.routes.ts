@@ -9,6 +9,7 @@ import { AsignarIncidenciaComponent } from './pages/asignar-incidencia/asignar-i
 import { RepuestoComponent } from './pages/logistica/repuesto/repuesto.component';
 import { DetalleIncidenciaComponent } from './detalle-incidencia/detalle-incidencia.component';
 import { HistorialEquipoComponent } from './historial-equipo/historial-equipo.component';
+import { SolicitudRepuestoComponent } from './pages/logistica/solicitud-repuesto/solicitud-repuesto.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -19,6 +20,7 @@ export const routes: Routes = [
   { path: 'detalle-incidencia/:id', component: DetalleIncidenciaComponent },
   { path: 'asignar-incidencia', component: AsignarIncidenciaComponent, canActivate: [RolJefeGuard]},
   { path: 'logistica/repuestos', component: RepuestoComponent, canActivate: [RolJefeGuard] },
+  { path: 'logistica/solicitud-repuesto', component: SolicitudRepuestoComponent, canActivate: [RolJefeGuard] },
   { path: 'historial-equipo', component: HistorialEquipoComponent },
   { path: 'asignar-incidencia', component: AsignarIncidenciaComponent, canActivate: [RolJefeGuard]}
 ];
