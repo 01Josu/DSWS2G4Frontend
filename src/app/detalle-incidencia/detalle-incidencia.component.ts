@@ -3,7 +3,6 @@ import { ActivatedRoute } from '@angular/router';
 import { IncidenciaService } from '../services/incidencia.service';
 import { IncidenciaInterface } from '../interfaces/incidencia.interface';
 import { CommonModule } from '@angular/common';
-import { Location } from '@angular/common';  // <-- Importar Location
 import { SolucionRequest } from '../interfaces/Solucion.Interface';
 import { FormsModule } from '@angular/forms';
 
@@ -23,17 +22,16 @@ export class DetalleIncidenciaComponent implements OnInit{
   soluciones: any[] = [];
   solucionRequest: SolucionRequest = {
     idIncidencia: 0,
-    idSolucion: 0,
+    idSolucion: null as any,
     palabrasClave: '',
     modalidadAtencion: '',
     estado: ''
   };
   mensajeExito: string = '';
-
+  solucionSeleccionada: any = null;
   constructor(
     private route: ActivatedRoute,
     private incidenciaService: IncidenciaService,
-    private location: Location
   ) {}
 
   prioridadesMap: { [key: number]: string } = {
@@ -58,17 +56,14 @@ export class DetalleIncidenciaComponent implements OnInit{
   getPrioridadTexto(prioridad: number): string {
     return this.prioridadesMap[prioridad] || `Prioridad #${prioridad}`;
   }
-  volverAtras() {
-    this.location.back();  // <-- función para volver atrás
-  }
+
   cargarSoluciones() {
     this.incidenciaService.obtenerSolucionesPorId(this.idIncidencia).subscribe({
       next: (soluciones) => {
-        console.log('✅ Soluciones cargadas:', soluciones);
+        console.log('Soluciones cargadas:', soluciones);
         if (Array.isArray(soluciones)) {
-          // Mapear a un formato simplificado (opcional)
           this.soluciones = soluciones.map((s: any) => ({
-            id: s.idSolucionProblema,
+            id:s.id,
             solucion: s.solucionProblema
           }));
         } else {
@@ -84,6 +79,11 @@ export class DetalleIncidenciaComponent implements OnInit{
 
   }
   registrarSolucion() {
+    if (!this.solucionSeleccionada) {
+      this.error = 'Debe seleccionar una solución válida';
+      return;
+    }
+    this.solucionRequest.idSolucion = this.solucionSeleccionada.id;
     this.incidenciaService.registrarSolucion(this.solucionRequest).subscribe({
       next: () => {
         this.mensajeExito = '✅ Solución registrada correctamente';
@@ -109,6 +109,4 @@ export class DetalleIncidenciaComponent implements OnInit{
       }
     });
   }
-  
-  
 }

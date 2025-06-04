@@ -224,7 +224,8 @@ export class IncidenciaService {
 
   // Registrar una solución aplicada a una incidencia
   registrarSolucion(request: SolucionRequest): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/solucion`, request);
+    console.log('Request a enviar:', request);
+    return this.http.post<any>(`${this.apiUrl}/incidencias/solucion`, request);
   }
 
 }
