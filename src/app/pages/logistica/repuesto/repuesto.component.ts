@@ -14,6 +14,8 @@ declare var bootstrap: any;
 })
 export class RepuestoComponent implements OnInit {
   repuestos: RepuestoInterface[] = [];
+  repuestosFiltrados: RepuestoInterface[] = [];
+  terminoBusqueda: string = '';
   form: RepuestoInterface = {
     codigoRepuesto: '',
     nombre: '',
@@ -32,7 +34,7 @@ export class RepuestoComponent implements OnInit {
     const usuario = loginResponse ? JSON.parse(loginResponse) : null;
 
     if (!usuario || usuario.rol !== 'LOGISTICA') {
-      this.router.navigate(['/acceso-denegado']); // o a una ruta segura
+      this.router.navigate(['/acceso-denegado']);
       return;
     }
     this.obtenerRepuestos();
@@ -57,7 +59,27 @@ export class RepuestoComponent implements OnInit {
   obtenerRepuestos(): void {
     this.repuestoService.listarRepuestos().subscribe(data => {
       this.repuestos = data;
+      this.repuestosFiltrados = data;
     });
+  }
+  
+  filtrarRepuestos(): void {
+    if (!this.terminoBusqueda.trim()) {
+      this.repuestosFiltrados = this.repuestos;
+      return;
+    }
+    const termino = this.terminoBusqueda.toLowerCase();
+    this.repuestosFiltrados = this.repuestos.filter(repuesto =>
+      repuesto.codigoRepuesto?.toLowerCase().includes(termino) ||
+      repuesto.nombre?.toLowerCase().includes(termino) ||
+      repuesto.descripcion?.toLowerCase().includes(termino) ||
+      repuesto.cantidad?.toString().includes(termino)
+    );
+  }
+  
+  limpiarBusqueda(): void {
+    this.terminoBusqueda = '';
+    this.repuestosFiltrados = this.repuestos;
   }
 
   guardarRepuesto(): void {

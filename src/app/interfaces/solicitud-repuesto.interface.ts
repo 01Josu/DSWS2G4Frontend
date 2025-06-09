@@ -1,8 +1,7 @@
+import { DetalleSolicitudInterface } from './detalle-solicitud.interface';
+
 export interface SolicitudRepuestoInterface {
-  id?: number;
-  codigoRepuesto: string;
-  nombreRepuesto: string;
-  cantidad: number;
-  estado: 'PENDIENTE' | 'ATENDIDO' | 'RECHAZADO';
-  fechaSolicitud?: string;
+  idIncidencia: number;
+  idTecnico: number;
+  detalles: DetalleSolicitudInterface[];
 }
