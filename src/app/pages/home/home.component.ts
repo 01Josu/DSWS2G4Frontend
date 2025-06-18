@@ -39,16 +39,22 @@ export class HomeComponent {
   }
 
   enviarAlerta(): void {
-    if (!this.incidenciaEncontrada?.idIncidencia ) return;
+    if (!this.incidenciaEncontrada?.idIncidencia) {
+      console.warn('No se encontró idIncidencia');
+      return;
+    }
 
     const alerta = {
-      idIncidencia: this.incidenciaEncontrada.idIncidencia ,
+      idIncidencia: this.incidenciaEncontrada.idIncidencia,
       motivo: 'Tiempo de atención excedido'
     };
 
+    console.log('Enviando alerta con:', alerta);
+
     this.incidenciaService.enviarAlerta(alerta).subscribe({
-      next: () => {
-        this.mensajeBusqueda = 'Alerta enviada correctamente.';
+      next: (res) => {
+        console.log('Respuesta del backend:', res);
+        this.mensajeBusqueda = res.mensaje;
       },
       error: (err) => {
         console.error('Error al enviar alerta:', err);
@@ -56,6 +62,5 @@ export class HomeComponent {
       }
     });
   }
-
 
 }
