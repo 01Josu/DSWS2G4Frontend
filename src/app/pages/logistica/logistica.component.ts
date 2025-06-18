@@ -50,12 +50,26 @@ export class LogisticaComponent implements OnInit {
     }
 
     const filtro = this.filtroTexto.toLowerCase();
-    this.solicitudesFiltradas = this.solicitudes.filter(solicitud =>
-      (solicitud.nombreTecnico?.toLowerCase().includes(filtro)) ||
-      (solicitud.nombreRepuesto?.toLowerCase().includes(filtro)) ||
-      (solicitud.estado?.toLowerCase().includes(filtro)) ||
-      (solicitud.idSolicitud?.toString().includes(filtro))
-    );
+    this.solicitudesFiltradas = this.solicitudes.filter(solicitud => {
+      // Búsqueda por nombre del técnico
+      const coincideNombreTecnico = solicitud.nombreTecnico?.toLowerCase().includes(filtro);
+      // Búsqueda por nombre del repuesto
+      const coincideNombreRepuesto = solicitud.nombreRepuesto?.toLowerCase().includes(filtro);
+      // Búsqueda por estado
+      const coincideEstado = solicitud.estado?.toLowerCase().includes(filtro);
+      // Búsqueda por ID de solicitud
+      const coincideIdSolicitud = solicitud.idSolicitud?.toString().includes(filtro);
+      // Búsqueda por código de repuesto (solo si comienza con "RI")
+      let coincideCodigoRepuesto = false;
+      if (filtro.startsWith('ri')) {
+        coincideCodigoRepuesto = solicitud.codigoRepuesto?.toLowerCase().startsWith(filtro);
+      }
+      return coincideNombreTecnico ||
+        coincideNombreRepuesto ||
+        coincideEstado ||
+        coincideIdSolicitud ||
+        coincideCodigoRepuesto;
+    });
   }
 
   confirmarAprobacion(solicitud: any): void {

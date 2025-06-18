@@ -25,7 +25,7 @@ export class RepuestoComponent implements OnInit {
   editando: boolean = false;
 
   constructor(
-    private repuestoService: RepuestoService, 
+    private repuestoService: RepuestoService,
     private router: Router
   ) {}
 
@@ -62,7 +62,7 @@ export class RepuestoComponent implements OnInit {
       this.repuestosFiltrados = data;
     });
   }
-  
+
   filtrarRepuestos(): void {
     if (!this.terminoBusqueda.trim()) {
       this.repuestosFiltrados = this.repuestos;
@@ -70,13 +70,16 @@ export class RepuestoComponent implements OnInit {
     }
     const termino = this.terminoBusqueda.toLowerCase();
     this.repuestosFiltrados = this.repuestos.filter(repuesto =>
-      repuesto.codigoRepuesto?.toLowerCase().includes(termino) ||
-      repuesto.nombre?.toLowerCase().includes(termino) ||
-      repuesto.descripcion?.toLowerCase().includes(termino) ||
-      repuesto.cantidad?.toString().includes(termino)
+        // Buscar en código de repuesto (solo si comienza con "ri")
+        (termino.startsWith('ri') &&
+          repuesto.codigoRepuesto?.toLowerCase().startsWith(termino)) ||
+        // Buscar en nombre
+        repuesto.nombre?.toLowerCase().includes(termino) ||
+        // Buscar en descripción
+        repuesto.descripcion?.toLowerCase().includes(termino)
     );
   }
-  
+
   limpiarBusqueda(): void {
     this.terminoBusqueda = '';
     this.repuestosFiltrados = this.repuestos;

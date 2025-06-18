@@ -61,18 +61,17 @@ export class SolicitudRepuestoComponent implements OnInit {
 
     const termino = this.terminoBusqueda.toLowerCase();
     this.solicitudesFiltradas = this.solicitudes.filter(solicitud =>
-      // Buscar por ID
-      solicitud.id?.toString().includes(termino) ||
-      // Buscar por nombre del técnico
-      solicitud.nombreTecnico?.toLowerCase().includes(termino) ||
-      // Buscar por nombre del repuesto
-      solicitud.nombreRepuesto?.toLowerCase().includes(termino) ||
-      // Buscar por código del repuesto
-      solicitud.codigoRepuesto?.toLowerCase().includes(termino) ||
-      // Buscar por estado
-      solicitud.estado?.toLowerCase().includes(termino) ||
-      // Buscar por descripción
-      solicitud.descripcionRepuesto?.toLowerCase().includes(termino)
+        // Buscar por ID
+        solicitud.id?.toString().includes(termino) ||
+        // Buscar por nombre del técnico
+        solicitud.nombreTecnico?.toLowerCase().includes(termino) ||
+        // Buscar por nombre del repuesto
+        solicitud.nombreRepuesto?.toLowerCase().includes(termino) ||
+        // Buscar por estado
+        solicitud.estado?.toLowerCase().includes(termino) ||
+        // Buscar por código de repuesto (si comienza con "rRI")
+        (termino.startsWith('ri') &&
+          solicitud.codigoRepuesto?.toLowerCase().startsWith(termino))
     );
   }
 

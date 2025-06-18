@@ -43,7 +43,7 @@ export class ListaIncidenciasComponent implements OnInit {
     this.cargarRepuestos();
   }
 
-  // Método mejorado para obtener el ID del técnico
+  // Método para obtener el ID del técnico
   private obtenerIdTecnico() {
     try {
       const loginDataStr = localStorage.getItem('loginResponse');
@@ -113,7 +113,6 @@ export class ListaIncidenciasComponent implements OnInit {
     });
   }
 
-  // Modifica el método buscarPorTicket
   buscarPorTicket() {
     if (!this.tecnicoId) {
       this.error = 'ID de técnico no válido';
@@ -129,15 +128,18 @@ export class ListaIncidenciasComponent implements OnInit {
         .obtenerIncidenciasTecnico(this.tecnicoId)
         .subscribe({
           next: (data) => {
-            // Filtrar localmente por cualquier campo
+            // Filtrar localmente por cualquier campo (excepto fechas)
             const termino = this.numeroTicket.toLowerCase().trim();
             this.incidencias = data.filter(
               (incidencia) =>
                 // Buscar en ID/número de ticket
                 incidencia.idIncidencia?.toString().includes(termino) ||
                 incidencia.id?.toString().includes(termino) ||
-                // Buscar en código de equipo
-                incidencia.codigoEquipo?.toLowerCase().includes(termino) ||
+                (termino.startsWith('eq') &&
+                  incidencia.codigoEquipo?.toLowerCase().startsWith(termino)) ||
+                // Si comienza con "EQ", buscar código de equipo
+                (termino.startsWith('eq') &&
+                  incidencia.codigoEquipo?.toLowerCase().includes(termino)) ||
                 // Buscar en descripción del problema
                 incidencia.descripcionProblema
                   ?.toLowerCase()
@@ -145,12 +147,7 @@ export class ListaIncidenciasComponent implements OnInit {
                 // Buscar en estado
                 incidencia.estado?.toLowerCase().includes(termino) ||
                 // Buscar en prioridad
-                incidencia.prioridad?.toString().includes(termino) ||
-                // Buscar en fecha (formato legible)
-                incidencia.fechaRegistro
-                  ?.toString()
-                  .toLowerCase()
-                  .includes(termino)
+                incidencia.prioridad?.toString().includes(termino)
             );
             this.cargando = false;
           },
