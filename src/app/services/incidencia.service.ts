@@ -186,9 +186,12 @@ export class IncidenciaService {
   }
 
   enviarAlerta(alerta: { idIncidencia: number; motivo: string }): Observable<any> {
-    return this.http.post(`${this.apiUrl}/incidencias/alerta`, alerta)
+    const headers = { 'Content-Type': 'application/json' };
+
+    return this.http.post(`${this.apiUrl}/incidencias/alerta`, alerta, { headers })
       .pipe(catchError(this.handleError));
   }
+
 
 
   private handleError(error: HttpErrorResponse) {
