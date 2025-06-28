@@ -46,7 +46,7 @@ export class LoginComponent {
         if (response.rol === 'TECNICO') {
           this.router.navigate(['/tecnico/incidencias']);
         } else if(response.rol === 'JEFE_AREA'){
-          this.router.navigate(['/asignar-incidencia'])
+          this.router.navigate(['/jefe/asignar-incidencia'])
         } else if(response.rol === 'LOGISTICA'){
           this.router.navigate(['/logistica/repuestos']);
         } else{

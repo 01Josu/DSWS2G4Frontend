@@ -1,0 +1,117 @@
+<div class="container mt-4">
+  <h2 class="mb-4">
+    <i class="bi bi-tools me-2"></i>Gestión de Incidencias
+  </h2>
+
+  <div *ngIf="mensaje" class="alert alert-danger">
+    <i class="bi bi-exclamation-circle-fill me-2"></i>{{ mensaje }}
+  </div>
+
+  <div class="table-responsive">
+    <table class="table table-hover table-bordered align-middle shadow-sm">
+      <thead class="table-dark text-nowrap">
+        <tr>
+          <th><i class="bi bi-hash"></i> ID</th>
+          <th><i class="bi bi-pc-display"></i> Equipo</th>
+          <th><i class="bi bi-envelope"></i> Correo</th>
+          <th><i class="bi bi-exclamation-circle"></i> Problema</th>
+          <th><i class="bi bi-flag"></i> Estado</th>
+          <th><i class="bi bi-calendar-event"></i> Fecha</th>
+          <th class="text-center"><i class="bi bi-gear"></i> Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let inc of incidencias">
+          <td class="fw-bold text-primary text-nowrap">{{ inc.idIncidencia ?? inc.id }}</td>
+          <td class="text-break">{{ inc.usuarioSolicitante.equipo?.codigoEquipo || 'Sin equipo' }}</td>
+          <td class="text-break">{{ inc.usuarioSolicitante.correoNumero || 'No registrado' }}</td>
+          <td class="text-break" style="white-space: normal; max-width: 250px;">
+            {{ inc.problemaSubcategoria.descripcionProblema || inc.descripcionProblema }}
+          </td>
+          <td class="text-center">
+            <span
+              class="badge rounded-pill px-3 py-2 text-uppercase fw-semibold d-inline-flex align-items-center gap-2"
+              [ngClass]="{
+                'bg-warning text-dark': inc.estado === 'EN_PROCESO',
+                'bg-success text-white': inc.estado === 'SOLUCIONADO',
+                'bg-secondary text-white': inc.estado === 'PENDIENTE'
+              }">
+              <i class="bi"
+                [ngClass]="{
+                  'bi-arrow-repeat': inc.estado === 'EN_PROCESO',
+                  'bi-check-circle-fill': inc.estado === 'SOLUCIONADO',
+                  'bi-hourglass-split': inc.estado === 'PENDIENTE'
+                }"></i>
+              {{ inc.estado }}
+            </span>
+          </td>
+          <td class="text-nowrap">
+            <small class="text-muted">
+              {{ inc.fecha | date:'dd/MM/yyyy' }}<br />
+              {{ inc.fecha | date:'HH:mm' }}
+            </small>
+          </td>
+          <td class="text-center text-nowrap">
+            <button
+              class="btn btn-outline-primary btn-sm me-2"
+              title="Editar"
+              (click)="editar(inc)"
+              data-bs-toggle="modal"
+              data-bs-target="#modalEditarIncidencia">
+              <i class="bi bi-pencil"></i>
+            </button>
+            <button
+              *ngIf="(inc.idIncidencia ?? inc.id) !== undefined"
+              class="btn btn-outline-danger btn-sm"
+              title="Eliminar"
+              (click)="eliminar((inc.idIncidencia ?? inc.id)!)">
+              <i class="bi bi-trash"></i>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Modal para editar incidencia -->
+  <div class="modal fade" id="modalEditarIncidencia" tabindex="-1" aria-labelledby="modalEditarIncidenciaLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content shadow-sm">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalEditarIncidenciaLabel">
+            <i class="bi bi-pencil-square me-2"></i>Editar Incidencia
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body" *ngIf="incidenciaEditando">
+          <form>
+            <div class="mb-3">
+              <label class="form-label">Equipo</label>
+              <input type="text" class="form-control" [value]="incidenciaEditando.usuarioSolicitante.equipo?.codigoEquipo || 'Sin equipo'" disabled>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Correo del Solicitante</label>
+              <input type="text" class="form-control" [value]="incidenciaEditando.usuarioSolicitante.correoNumero || 'No registrado'" disabled>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Estado</label>
+              <select class="form-select" [(ngModel)]="incidenciaEditando.estado" name="estado">
+                <option value="PENDIENTE">PENDIENTE</option>
+                <option value="EN_PROCESO">EN PROCESO</option>
+                <option value="SOLUCIONADO">SOLUCIONADO</option>
+              </select>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-success" (click)="guardarCambios()" data-bs-dismiss="modal">
+            <i class="bi bi-save me-1"></i>Guardar Cambios
+          </button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            <i class="bi bi-x-circle me-1"></i>Cancelar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

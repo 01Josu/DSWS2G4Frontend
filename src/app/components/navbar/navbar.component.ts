@@ -58,6 +58,10 @@ export class NavbarComponent implements OnInit{
   isLogistica(): boolean {
     return this.getUserRole() === 'LOGISTICA';
   }
+  
+  isJefeArea(): boolean {
+    return this.getUserRole() === 'JEFE_AREA';
+  }
 
   isLoggedIn(): boolean {
     if (this.mostrarComoNoLogueado) {
