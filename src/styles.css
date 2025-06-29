@@ -72,10 +72,6 @@ app-root {
   min-height: 100vh;
 }
 
-/* Estilos para el contenido principal */
-.main-content {
-  /* No necesitamos margin-bottom aquí porque ya tenemos padding-bottom en el body */
-}
 
 /* Estilos para el footer fijo */
 footer {

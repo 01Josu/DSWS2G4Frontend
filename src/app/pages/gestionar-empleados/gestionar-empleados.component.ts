@@ -1,21 +1,21 @@
 import { Component, OnInit } from '@angular/core';
-import { EmpleadoService, UsuarioSolicitante } from '../../services/empleado.service';
+import { UsuarioService, UsuarioSolicitante } from '../../services/empleado.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 @Component({
-  selector: 'app-gestionar-empleados',
+  selector: 'app-gestionar-usuarios',
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './gestionar-empleados.component.html',
   styleUrls: ['./gestionar-empleados.component.css']
 })
-export class GestionarEmpleadosComponent implements OnInit {
-  empleados: UsuarioSolicitante[] = [];
+export class GestionarUsuariosComponent implements OnInit {
+  usuarios: UsuarioSolicitante[] = [];
   filtroId: number | null = null;
   mensaje: string = '';
 
-  nuevoEmpleado: UsuarioSolicitante = {
+  nuevoUsuario: UsuarioSolicitante = {
     correoNumero: '',
     prioridadUsuario: 1,
     equipo: {
@@ -26,80 +26,73 @@ export class GestionarEmpleadosComponent implements OnInit {
   editando: boolean = false;
   idEditando: number | null = null;
 
-  constructor(private empleadoService: EmpleadoService) {}
+  constructor(private usuarioService: UsuarioService) {}
 
   ngOnInit(): void {
-    this.obtenerEmpleados();
+    this.obtenerUsuarios();
   }
 
-  obtenerEmpleados(): void {
-    this.empleadoService.listar().subscribe(data => {
-      this.empleados = data;
+  obtenerUsuarios(): void {
+    this.usuarioService.listar().subscribe(data => {
+      this.usuarios = data;
       this.mensaje = '';
     });
   }
 
   buscarPorId(): void {
     if (this.filtroId !== null) {
-      this.empleadoService.buscarPorId(this.filtroId).subscribe({
-        next: (empleado) => {
-          this.empleados = [empleado];
+      this.usuarioService.buscarPorId(this.filtroId).subscribe({
+        next: (usuario) => {
+          this.usuarios = [usuario];
           this.mensaje = '';
         },
         error: () => {
-          this.mensaje = 'Empleado no encontrado';
-          this.empleados = [];
+          this.mensaje = 'Usuario no encontrado';
+          this.usuarios = [];
         }
       });
     } else {
-      this.obtenerEmpleados();
+      this.obtenerUsuarios();
     }
   }
 
   eliminar(id: number): void {
-    if (confirm('¿Estás seguro de eliminar este empleado?')) {
-      this.empleadoService.eliminar(id).subscribe(() => {
-        this.obtenerEmpleados();
+    if (confirm('¿Estás seguro de eliminar este usuario?')) {
+      this.usuarioService.eliminar(id).subscribe(() => {
+        this.obtenerUsuarios();
       });
     }
   }
 
-  crearEmpleado(): void {
-    if (!this.nuevoEmpleado.correoNumero || !this.nuevoEmpleado.equipo.idEquipo) {
-      alert('Completa los campos necesarios');
-      return;
+  guardarUsuario(): void {
+    if (this.editando && this.idEditando !== null) {
+      this.usuarioService.actualizar(this.idEditando, this.nuevoUsuario).subscribe(() => {
+        this.obtenerUsuarios();
+        this.editando = false;
+        this.idEditando = null;
+      });
+    } else {
+      this.usuarioService.crear(this.nuevoUsuario).subscribe(() => {
+        this.obtenerUsuarios();
+      });
     }
-
-    this.empleadoService.crear(this.nuevoEmpleado).subscribe(() => {
-      this.obtenerEmpleados();
-      this.nuevoEmpleado = { correoNumero: '', prioridadUsuario: 1, equipo: { idEquipo: 1 } };
-    });
   }
 
-  editarEmpleado(empleado: UsuarioSolicitante): void {
+  editarUsuario(usuario: UsuarioSolicitante): void {
+    this.nuevoUsuario = { ...usuario };
     this.editando = true;
-    this.idEditando = empleado.id!;
-    this.nuevoEmpleado = {
-      correoNumero: empleado.correoNumero,
-      prioridadUsuario: empleado.prioridadUsuario,
-      equipo: {
-        idEquipo: empleado.equipo.idEquipo
-      }
-    };
-  }
-
-  guardarEdicion(): void {
-    if (this.idEditando === null) return;
-
-    this.empleadoService.actualizar(this.idEditando, this.nuevoEmpleado).subscribe(() => {
-      this.obtenerEmpleados();
-      this.cancelarEdicion();
-    });
+    this.idEditando = usuario.id || null;
   }
 
   cancelarEdicion(): void {
     this.editando = false;
     this.idEditando = null;
-    this.nuevoEmpleado = { correoNumero: '', prioridadUsuario: 1, equipo: { idEquipo: 1 } };
+    this.nuevoUsuario = {
+      correoNumero: '',
+      prioridadUsuario: 1,
+      equipo: {
+        idEquipo: 1
+      }
+    };
   }
 }

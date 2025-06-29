@@ -1,5 +1,5 @@
 <div class="container mt-4">
-  <h3 class="mb-3">Gestión de Empleados</h3>
+  <h3 class="mb-3">Gestión de Usuarios</h3>
 
   <!-- Buscador -->
   <div class="mb-3 row g-2">
@@ -12,7 +12,7 @@
       </button>
     </div>
     <div class="col-md-2">
-      <button class="btn btn-secondary w-100" (click)="obtenerEmpleados()">
+      <button class="btn btn-secondary w-100" (click)="obtenerUsuarios()">
         <i class="bi bi-arrow-repeat me-1"></i> Restablecer
       </button>
     </div>
@@ -22,21 +22,21 @@
 
   <!-- Formulario de creación/edición -->
   <div class="card p-3 mb-3">
-    <h5>{{ editando ? 'Editar Empleado' : 'Nuevo Empleado' }}</h5>
+    <h5>{{ editando ? 'Editar Usuario' : 'Nuevo Usuario' }}</h5>
     <div class="row g-2">
       <div class="col-md-4">
-        <input [(ngModel)]="nuevoEmpleado.correoNumero" class="form-control" placeholder="Correo o número">
+        <input [(ngModel)]="nuevoUsuario.correoNumero" class="form-control" placeholder="Correo o número">
       </div>
       <div class="col-md-2">
-        <input type="number" [(ngModel)]="nuevoEmpleado.prioridadUsuario" class="form-control" placeholder="Prioridad">
+        <input type="number" [(ngModel)]="nuevoUsuario.prioridadUsuario" class="form-control" placeholder="Prioridad">
       </div>
       <div class="col-md-3">
-        <input type="number" [(ngModel)]="nuevoEmpleado.equipo.idEquipo" class="form-control" placeholder="ID Equipo">
+        <input type="number" [(ngModel)]="nuevoUsuario.equipo.idEquipo" class="form-control" placeholder="ID Equipo">
       </div>
       <div class="col-md-3 d-grid gap-2">
-        <button class="btn btn-success" (click)="editando ? guardarEdicion() : crearEmpleado()">
+        <button class="btn btn-success" (click)="guardarUsuario()">
           <i class="bi bi-check-circle-fill me-1"></i>
-          {{ editando ? 'Guardar Cambios' : 'Crear Empleado' }}
+          {{ editando ? 'Guardar Cambios' : 'Crear Usuario' }}
         </button>
         <button *ngIf="editando" class="btn btn-secondary" (click)="cancelarEdicion()">
           <i class="bi bi-x-circle-fill me-1"></i> Cancelar
@@ -45,7 +45,7 @@
     </div>
   </div>
 
-  <!-- Tabla de empleados -->
+  <!-- Tabla de usuarios -->
   <div class="table-responsive">
     <table class="table table-bordered table-hover align-middle">
       <thead class="table-dark">
@@ -58,13 +58,13 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let e of empleados">
+        <tr *ngFor="let e of usuarios">
           <td>{{ e.id }}</td>
           <td>{{ e.correoNumero }}</td>
           <td>{{ e.prioridadUsuario }}</td>
           <td>{{ e.equipo.idEquipo }}</td>
           <td>
-            <button class="btn btn-sm btn-warning me-1" (click)="editarEmpleado(e)">
+            <button class="btn btn-sm btn-warning me-1" (click)="editarUsuario(e)">
               <i class="bi bi-pencil-square"></i>
             </button>
             <button class="btn btn-sm btn-danger" (click)="eliminar(e.id!)">

@@ -11,7 +11,7 @@ import { DetalleIncidenciaComponent } from './detalle-incidencia/detalle-inciden
 import { HistorialEquipoComponent } from './historial-equipo/historial-equipo.component';
 import { SolicitudRepuestoComponent } from './pages/logistica/solicitud-repuesto/solicitud-repuesto.component';
 import { GestionarIncidenciasComponent } from './pages/gestionar-incidencias/gestionar-incidencias.component';
-import { GestionarEmpleadosComponent } from './pages/gestionar-empleados/gestionar-empleados.component';
+import { GestionarUsuariosComponent } from './pages/gestionar-empleados/gestionar-empleados.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -25,5 +25,5 @@ export const routes: Routes = [
   { path: 'historial-equipo', component: HistorialEquipoComponent },
   { path: 'jefe/asignar-incidencia', component: AsignarIncidenciaComponent, canActivate: [RolJefeGuard]},
   { path: 'jefe/incidencias', component: GestionarIncidenciasComponent, canActivate: [RolJefeGuard]},
-  { path: 'jefe/empleados', component: GestionarEmpleadosComponent, canActivate: [RolJefeGuard]}
+  { path: 'jefe/usuarios', component: GestionarUsuariosComponent, canActivate: [RolJefeGuard]}
 ];
