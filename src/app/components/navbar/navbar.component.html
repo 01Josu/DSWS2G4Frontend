@@ -38,29 +38,52 @@
 
         <!-- Enlaces para usuarios autenticados -->
         <ng-container *ngIf="isLoggedIn()">
-          <!-- Aquí ya está "Mis Incidencias" -->
+          <!-- Aquí ya está "Mis Incidencias" TECNICO -->
           <li class="nav-item" *ngIf="isTecnico()">
             <a class="nav-link" routerLink="/tecnico/incidencias" routerLinkActive="active">
               <i class="bi bi-list-check me-1"></i> Mis Incidencias
             </a>
           </li>
 
+          <!-- Aquí ya está "Mis Incidencias" LOGISTICA -->
           <li class="nav-item" *ngIf="isLogistica()">
             <a class="nav-link" routerLink="../logistica/solicitud-repuesto" routerLinkActive="active">
               <i class="bi bi-journal-plus me-1"></i> Solicitudes de Repuestos
             </a>
           </li>
-          
+
+          <!-- Aquí ya está "Mis Incidencias" LOGISTICA -->
           <li class="nav-item" *ngIf="isLogistica()">
             <a class="nav-link" routerLink="../logistica/repuestos" routerLinkActive="active">
               <i class="bi bi-gear-fill me-1"></i> Gestion de Repuestos
             </a>
           </li>          
           
-          <!-- Aqui esta "Historial de Incidencias" -->
+          <!-- Aqui esta "Historial de Incidencias" TECNICO-->
           <li class="nav-item" *ngIf="isTecnico()">
             <a class="nav-link" routerLink="/historial-equipo" routerLinkActive="active">
               <i class="bi bi-clock-history me-1"></i> Historial de Incidencias
+            </a>
+          </li>
+
+          <!-- Aqui esta "Gestionar Incidencias" JEFE AREA-->
+          <li class="nav-item" *ngIf="isJefeArea()">
+            <a class="nav-link" routerLink="/jefe/incidencias" routerLinkActive="active">
+              <i class="bi bi-clipboard-data-fill me-1"></i> Gestionar Incidencias
+            </a>
+          </li>
+
+          <!-- Aqui esta "Gestionar Empleados" JEFE AREA-->
+          <li class="nav-item" *ngIf="isJefeArea()">
+            <a class="nav-link" routerLink="/jefe/usuarios" routerLinkActive="active">
+              <i class="bi bi-person-badge-fill me-1"></i> Gestionar Usuarios
+            </a>
+          </li>
+
+          <!-- Aquí está "Asignar Incidencias" para JEFE AREA -->
+          <li class="nav-item" *ngIf="isJefeArea()">
+            <a class="nav-link" routerLink="/jefe/asignar-incidencia" routerLinkActive="active">
+              <i class="bi bi-person-lines-fill me-1"></i> Asignar Incidencias
             </a>
           </li>
 

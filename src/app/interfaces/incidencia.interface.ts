@@ -4,6 +4,7 @@ export interface IncidenciaInterface {
   correoSolicitante: string;
   codigoEquipo: string;
   fechaRegistro: string;
+  fecha: string;
   descripcionProblema: string;
   estado: string;
   prioridad: number;
@@ -11,10 +12,13 @@ export interface IncidenciaInterface {
   subCategoria:String;
 
   problemaSubcategoria: {
-    "descripcionProblema": "Pantalla no enciende"
+    descripcionProblema: string;
   },
   usuarioSolicitante: {
-    "correoNumero": "usuario@email.com"
-  },
+    correoNumero: string;
+    equipo?: {
+      codigoEquipo: string;
+    };
+  };
 }
 

@@ -27,7 +27,6 @@ export class RegisterComponent {
     event.preventDefault();
 
     const email = (document.getElementById('registerEmail') as HTMLInputElement).value;
-    const nombre = (document.getElementById('registerUsername') as HTMLInputElement).value;
     const password = (document.getElementById('registerPassword') as HTMLInputElement).value;
     const confirmPassword = (document.getElementById('confirmPassword') as HTMLInputElement).value;
 
@@ -42,7 +41,6 @@ export class RegisterComponent {
     }
 
     const registroData = {
-      nombre,
       username: email,
       password_hash: password,
       role: this.selectedRole

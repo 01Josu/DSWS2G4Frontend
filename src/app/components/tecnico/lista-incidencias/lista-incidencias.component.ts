@@ -56,18 +56,12 @@ export class ListaIncidenciasComponent implements OnInit {
             this.tecnicoId
           );
         } else {
-          console.warn('No se encontró idEmpleado en loginResponse');
-          this.error =
-            'Error de autenticación. Por favor, inicie sesión nuevamente.';
+          console.warn('No se encontró idUsuario en loginResponse');
+          this.error = 'No se encontró el ID del usuario en la sesión';
         }
-      } else {
-        console.warn('No se encontró loginResponse en localStorage');
-        this.error = 'Sesión expirada. Por favor, inicie sesión nuevamente.';
-        this.router.navigate(['/login']);
       }
     } catch (e) {
-      console.error('Error al obtener ID de técnico:', e);
-      this.error = 'Error al obtener información del usuario.';
+      this.error = 'Error al obtener el ID del usuario';
     }
   }
 

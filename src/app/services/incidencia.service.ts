@@ -231,4 +231,13 @@ export class IncidenciaService {
     return this.http.post<any>(`${this.apiUrl}/incidencias/solucion`, request);
   }
 
+  getTodasIncidencias(): Observable<IncidenciaInterface[]> {
+    return this.http.get<IncidenciaInterface[]>(`${this.apiUrl}/incidencias`)
+      .pipe(catchError(this.handleError));
+  }
+
+  eliminarIncidencia(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/incidencias/${id}`)
+      .pipe(catchError(this.handleError));
+  }
 }

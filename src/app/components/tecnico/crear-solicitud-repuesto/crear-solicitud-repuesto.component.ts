@@ -37,7 +37,7 @@ export class CrearSolicitudRepuestoComponent implements OnInit {
       return;
     }
 
-    this.idTecnico = usuario.idEmpleado;
+    this.idTecnico = usuario.idUsuario;
     this.cargarRepuestos();
   }
 
