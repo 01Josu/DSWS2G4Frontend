@@ -3,26 +3,26 @@
     <div class="modal-content">
       <div class="modal-header bg-warning text-dark">
         <h5 class="modal-title" id="solicitudRepuestosModalLabel">
-          <i class="bi bi-gear-fill me-2"></i>Solicitar Repuestos - Incidencia #{{incidenciaId}}
+          <i class="bi bi-tools me-2"></i>Solicitar Repuestos - Incidencia #{{ incidenciaId }}
         </h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        
+
         <!-- Mensajes -->
         <div *ngIf="mensajeExito" class="alert alert-success">
-          <i class="bi bi-check-circle-fill me-2"></i>{{mensajeExito}}
+          <i class="bi bi-check-circle-fill me-2"></i>{{ mensajeExito }}
         </div>
         <div *ngIf="mensajeError" class="alert alert-danger">
-          <i class="bi bi-exclamation-triangle-fill me-2"></i>{{mensajeError}}
+          <i class="bi bi-exclamation-triangle-fill me-2"></i>{{ mensajeError }}
         </div>
 
         <!-- Búsqueda de repuestos -->
         <div class="row mb-3">
           <div class="col-md-8">
             <label class="form-label">Buscar Repuestos</label>
-            <input type="text" class="form-control" 
-                   [(ngModel)]="busquedaRepuesto" 
+            <input type="text" class="form-control"
+                   [(ngModel)]="busquedaRepuesto"
                    (keyup)="buscarRepuestos()"
                    placeholder="Buscar por nombre...">
           </div>
@@ -34,34 +34,31 @@
             <label class="form-label">Repuestos Disponibles</label>
             <div class="table-responsive" style="max-height: 200px; overflow-y: auto;">
               <table class="table table-sm table-hover">
-                <thead class="table-secondary">
-                  <tr>
-                    <th>Código</th>
-                    <th>Nombre</th>
-                    <th>Stock</th>
-                    <th>Acción</th>
-                  </tr>
+                <thead class="table-warning">
+                <tr>
+                  <th>Código</th>
+                  <th>Nombre</th>
+                  <th>Stock</th>
+                  <th>Acción</th>
+                </tr>
                 </thead>
                 <tbody>
-                  <tr *ngFor="let repuesto of repuestosFiltrados" 
-                      [class.table-warning]="repuestoSeleccionado?.id === repuesto.id">
-                    <td>{{repuesto.codigoRepuesto}}</td>
-                    <td>{{repuesto.nombre}}</td>
-                    <td>
-                      <span class="badge" [ngClass]="{
-                        'bg-success': repuesto.cantidad! > 10,
-                        'bg-warning': repuesto.cantidad! <= 10 && repuesto.cantidad! > 0,
-                        'bg-danger': repuesto.cantidad === 0
-                      }">{{repuesto.cantidad}}</span>
-                    </td>
-                    <td>
-                      <button class="btn btn-sm btn-outline-primary" 
-                              (click)="seleccionarRepuesto(repuesto)"
-                              [disabled]="repuesto.cantidad === 0">
-                        <i class="bi bi-plus-circle"></i>
-                      </button>
-                    </td>
-                  </tr>
+                <tr *ngFor="let repuesto of repuestosFiltrados">
+                  <td>{{ repuesto.codigoRepuesto }}</td>
+                  <td>{{ repuesto.nombre }}</td>
+                  <td>
+                      <span class="badge" [ngClass]="repuesto.cantidad! > 0 ? 'bg-success' : 'bg-danger'">
+                        {{ repuesto.cantidad }}
+                      </span>
+                  </td>
+                  <td>
+                    <button class="btn btn-sm btn-primary"
+                            (click)="seleccionarRepuesto(repuesto)"
+                            [disabled]="repuesto.cantidad === 0">
+                      <i class="bi bi-plus-circle"></i>
+                    </button>
+                  </td>
+                </tr>
                 </tbody>
               </table>
             </div>
@@ -72,13 +69,13 @@
         <div *ngIf="repuestoSeleccionado" class="row mb-3">
           <div class="col-md-8">
             <label class="form-label">Repuesto Seleccionado</label>
-            <input type="text" class="form-control" 
+            <input type="text" class="form-control"
                    [value]="repuestoSeleccionado.nombre" readonly>
           </div>
           <div class="col-md-2">
             <label class="form-label">Cantidad</label>
-            <input type="number" class="form-control" 
-                   [(ngModel)]="cantidadSolicitada" 
+            <input type="number" class="form-control"
+                   [(ngModel)]="cantidadSolicitada"
                    [max]="repuestoSeleccionado.cantidad" min="1">
           </div>
           <div class="col-md-2">
@@ -96,22 +93,22 @@
             <div class="table-responsive">
               <table class="table table-bordered">
                 <thead class="table-primary">
-                  <tr>
-                    <th>Repuesto</th>
-                    <th>Cantidad</th>
-                    <th>Acción</th>
-                  </tr>
+                <tr>
+                  <th>Repuesto</th>
+                  <th>Cantidad</th>
+                  <th>Acción</th>
+                </tr>
                 </thead>
                 <tbody>
-                  <tr *ngFor="let detalle of solicitudDetalles; let i = index">
-                    <td>{{detalle.nombreRepuesto}}</td>
-                    <td>{{detalle.cantidad}}</td>
-                    <td>
-                      <button class="btn btn-sm btn-danger" (click)="eliminarRepuesto(i)">
-                        <i class="bi bi-trash"></i>
-                      </button>
-                    </td>
-                  </tr>
+                <tr *ngFor="let detalle of solicitudDetalles; let i = index">
+                  <td>{{ detalle.nombreRepuesto }}</td>
+                  <td>{{ detalle.cantidad }}</td>
+                  <td>
+                    <button class="btn btn-sm btn-danger" (click)="eliminarRepuesto(i)">
+                      <i class="bi bi-trash"></i>
+                    </button>
+                  </td>
+                </tr>
                 </tbody>
               </table>
             </div>
@@ -119,10 +116,11 @@
         </div>
 
       </div>
+
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-        <button type="button" class="btn btn-warning" 
-                (click)="enviarSolicitud()" 
+        <button type="button" class="btn btn-warning"
+                (click)="enviarSolicitud()"
                 [disabled]="cargando || solicitudDetalles.length === 0">
           <span *ngIf="cargando" class="spinner-border spinner-border-sm me-2"></span>
           <i class="bi bi-send-fill me-2"></i>Enviar Solicitud

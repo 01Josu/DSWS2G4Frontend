@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
+import {Observable, of, tap, throwError} from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { SolicitudRepuestoInterface } from '../interfaces/solicitud-repuesto.interface';
 import { RepuestoInterface } from '../interfaces/repuesto.interface';
@@ -65,6 +65,33 @@ export class SolicitudRepuestoService {
     return this.http
       .put<string>(`${this.apiUrl}/${id}/estado?estado=RECHAZADO`, body)
       .pipe(catchError(this.handleError));
+  }
+
+  // Obtener solicitudes por técnico
+  obtenerSolicitudesPorTecnico(idEmpleado: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/tecnico/${idEmpleado}`)
+      .pipe(
+        tap(response => console.log('Respuesta del backend:', response)),
+        catchError(this.handleError)
+      );
+  }
+
+  // Editar solicitud por técnico
+  editarSolicitudPorTecnico(idSolicitud: number, idEmpleadoTecnico: number, datos: any): Observable<any> {
+    return this.http
+      .put(`${this.apiUrl}/editar/${idSolicitud}?idEmpleadoTecnico=${idEmpleadoTecnico}`, datos, {
+        responseType: 'text' // AGREGAR ESTO - El backend devuelve texto plano
+      })
+      .pipe(
+        catchError((error) => {
+          // Si es status 200 pero Angular lo interpreta como error
+          if (error.status === 200) {
+            // Es exitoso, devolver el texto de respuesta
+            return of(error.error.text || 'Solicitud actualizada correctamente');
+          }
+          return this.handleError(error);
+        })
+      );
   }
 
   private handleError(error: HttpErrorResponse) {

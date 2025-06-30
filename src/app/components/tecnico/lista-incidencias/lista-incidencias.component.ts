@@ -29,6 +29,12 @@ export class ListaIncidenciasComponent implements OnInit {
   mensajeSolicitud: string = '';
   errorSolicitud: string = '';
   cargandoRepuestos: boolean = false;
+  busquedaRepuesto: string = '';
+
+  // Variables para gestión de solicitudes
+  misSolicitudes: any[] = [];
+  solicitudEditando: any = null;
+  modoEdicionSolicitud: boolean = false;
 
   constructor(
     private incidenciaService: IncidenciaService,
@@ -41,6 +47,7 @@ export class ListaIncidenciasComponent implements OnInit {
     this.obtenerIdTecnico();
     this.cargarIncidencias();
     this.cargarRepuestos();
+    this.cargarMisSolicitudes();
   }
 
   // Método para obtener el ID del técnico
@@ -358,5 +365,160 @@ export class ListaIncidenciasComponent implements OnInit {
   limpiarMensajes() {
     this.mensajeSolicitud = '';
     this.errorSolicitud = '';
+  }
+
+  cargarMisSolicitudes(): void {
+    const loginResponse = localStorage.getItem('loginResponse');
+    const usuario = loginResponse ? JSON.parse(loginResponse) : null;
+
+    if (usuario && usuario.idEmpleado) {
+      this.solicitudRepuestoService.obtenerSolicitudesPorTecnico(usuario.idEmpleado).subscribe({
+        next: (solicitudes) => {
+          this.misSolicitudes = solicitudes;
+        },
+        error: (error) => {
+          console.error('Error al cargar solicitudes:', error);
+        }
+      });
+    }
+  }
+
+  editarSolicitud(solicitud: any): void {
+    if (solicitud.estado !== 'PENDIENTE') {
+      this.errorSolicitud = 'Solo se pueden editar solicitudes en estado pendiente';
+      return;
+    }
+
+    console.log('Solicitud completa a editar:', solicitud);
+    this.solicitudEditando = { ...solicitud };
+    this.modoEdicionSolicitud = true;
+
+    // Limpiar repuestos anteriores
+    this.repuestosSolicitados = [];
+    this.cargarRepuestos();
+
+    // CORRECCIÓN: Mapear directamente desde la solicitud principal
+    // ya que el backend envía los datos del repuesto en el nivel principal
+    if (solicitud) {
+      const repuestoActual = {
+        id: solicitud.idRepuesto || solicitud.id, // Usar idRepuesto si existe, sino el id
+        codigoRepuesto: solicitud.codigoRepuesto,
+        nombre: solicitud.nombreRepuesto,
+        descripcion: solicitud.descripcionRepuesto || solicitud.descripcion,
+        cantidad: 999, // Stock disponible (ficticio para el modal)
+        cantidadSolicitada: solicitud.cantidad || 1
+      };
+
+      // Verificar que tenemos datos válidos antes de agregar
+      if (repuestoActual.codigoRepuesto && repuestoActual.nombre) {
+        this.repuestosSolicitados = [repuestoActual];
+        console.log('Repuesto actual cargado correctamente:', repuestoActual);
+      } else {
+        console.warn('Datos del repuesto incompletos:', solicitud);
+
+        // Si los datos principales no están, intentar con detalles
+        if (solicitud.detalles && solicitud.detalles.length > 0) {
+          const detalle = solicitud.detalles[0];
+          const repuestoDesdeDetalle = {
+            id: detalle.idRepuesto,
+            codigoRepuesto: detalle.codigoRepuesto,
+            nombre: detalle.nombreRepuesto,
+            descripcion: detalle.descripcionRepuesto,
+            cantidad: 999,
+            cantidadSolicitada: detalle.cantidad
+          };
+          this.repuestosSolicitados = [repuestoDesdeDetalle];
+          console.log('Repuesto cargado desde detalles:', repuestoDesdeDetalle);
+        }
+      }
+    }
+
+    // Abrir modal de edición
+    const modalElement = document.getElementById('modalEditarSolicitud');
+    if (modalElement) {
+      const modal = new (window as any).bootstrap.Modal(modalElement);
+      modal.show();
+    }
+  }
+
+  guardarCambiosSolicitud(): void {
+    if (!this.solicitudEditando || this.repuestosSolicitados.length === 0) {
+      this.errorSolicitud = 'Debe seleccionar al menos un repuesto';
+      return;
+    }
+
+    const datosActualizados = {
+      idIncidencia: this.solicitudEditando.idIncidencia,
+      idTecnico: this.tecnicoId,
+      detalles: this.repuestosSolicitados.map(rep => ({
+        idRepuesto: rep.id,
+        nombreRepuesto: rep.nombre,
+        cantidad: rep.cantidadSolicitada || 1,
+        descripcion: rep.descripcion
+      }))
+    };
+
+    this.solicitudRepuestoService.editarSolicitudPorTecnico(
+      this.solicitudEditando.id,
+      this.tecnicoId,
+      datosActualizados
+    ).subscribe({
+      next: (response) => {
+        this.mensajeSolicitud = 'Solicitud actualizada correctamente';
+        this.errorSolicitud = '';
+        this.modoEdicionSolicitud = false;
+        this.solicitudEditando = null;
+        this.cargarMisSolicitudes(); // Recargar solicitudes
+
+        // Cerrar modal
+        const modalElement = document.getElementById('modalEditarSolicitud');
+        if (modalElement) {
+          const modal = (window as any).bootstrap.Modal.getInstance(modalElement);
+          if (modal) {
+            modal.hide();
+          }
+        }
+      },
+      error: (error) => {
+        console.error('Error al actualizar solicitud:', error);
+        if (error.error && error.error.mensaje) {
+          this.errorSolicitud = error.error.mensaje;
+        } else {
+          this.errorSolicitud = 'Error al actualizar la solicitud';
+        }
+      }
+    });
+  }
+
+  cancelarEdicionSolicitud(): void {
+    this.modoEdicionSolicitud = false;
+    this.solicitudEditando = null;
+    this.repuestosSolicitados = [];
+    this.errorSolicitud = '';
+    this.mensajeSolicitud = '';
+    this.busquedaRepuesto = '';
+
+    // Cerrar modal
+    const modalElement = document.getElementById('modalEditarSolicitud');
+    if (modalElement) {
+      const modal = (window as any).bootstrap.Modal.getInstance(modalElement);
+      if (modal) {
+        modal.hide();
+      }
+    }
+  }
+
+  buscarRepuestos(): void {
+    if (this.busquedaRepuesto.trim()) {
+      const termino = this.busquedaRepuesto.toLowerCase();
+      this.repuestosDisponibles = this.repuestosDisponibles.filter(repuesto =>
+        repuesto.nombre.toLowerCase().includes(termino) ||
+        repuesto.codigoRepuesto.toLowerCase().includes(termino) ||
+        repuesto.descripcion.toLowerCase().includes(termino)
+      );
+    } else {
+      // Si no hay búsqueda, mostrar todos
+      this.repuestosDisponibles = [...this.repuestosDisponibles];
+    }
   }
 }

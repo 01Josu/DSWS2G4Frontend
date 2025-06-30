@@ -81,55 +81,55 @@
             <div class="table-responsive">
               <table class="table table-hover mb-0">
                 <thead class="table-dark">
-                  <tr>
-                    <th class="border-0 fw-semibold">
-                      <i class="bi bi-hash me-1"></i>ID
-                    </th>
-                    <th class="border-0 fw-semibold">
-                      <i class="bi bi-pc-display me-1"></i>Equipo
-                    </th>
-                    <th class="border-0 fw-semibold">
-                      <i class="bi bi-calendar3 me-1"></i>Fecha
-                    </th>
-                    <th class="border-0 fw-semibold">
-                      <i class="bi bi-exclamation-triangle me-1"></i>Problema
-                    </th>
-                    <th class="border-0 fw-semibold text-center">
-                      <i class="bi bi-flag me-1"></i>Estado
-                    </th>
-                    <th class="border-0 fw-semibold text-center">
-                      <i class="bi bi-speedometer me-1"></i>Prioridad
-                    </th>
-                    <th class="border-0 fw-semibold text-center">Acciones</th>
-                  </tr>
+                <tr>
+                  <th class="border-0 fw-semibold">
+                    <i class="bi bi-hash me-1"></i>ID
+                  </th>
+                  <th class="border-0 fw-semibold">
+                    <i class="bi bi-pc-display me-1"></i>Equipo
+                  </th>
+                  <th class="border-0 fw-semibold">
+                    <i class="bi bi-calendar3 me-1"></i>Fecha
+                  </th>
+                  <th class="border-0 fw-semibold">
+                    <i class="bi bi-exclamation-triangle me-1"></i>Problema
+                  </th>
+                  <th class="border-0 fw-semibold text-center">
+                    <i class="bi bi-flag me-1"></i>Estado
+                  </th>
+                  <th class="border-0 fw-semibold text-center">
+                    <i class="bi bi-speedometer me-1"></i>Prioridad
+                  </th>
+                  <th class="border-0 fw-semibold text-center">Acciones</th>
+                </tr>
                 </thead>
                 <tbody>
-                  <tr *ngFor="let incidencia of incidencias" class="hover-row">
-                    <td class="fw-bold text-primary fs-6">
-                      #{{ incidencia.idIncidencia || incidencia.id }}
-                    </td>
-                    <td>
+                <tr *ngFor="let incidencia of incidencias" class="hover-row">
+                  <td class="fw-bold text-primary fs-6">
+                    #{{ incidencia.idIncidencia || incidencia.id }}
+                  </td>
+                  <td>
                         <span class="fw-medium">{{
-                          incidencia.codigoEquipo
-                        }}</span>
-                    </td>
-                    <td>
-                      <small class="text-muted">
-                        {{ incidencia.fechaRegistro | date : "dd/MM/yyyy" }}
-                        <br />
-                        {{ incidencia.fechaRegistro | date : "HH:mm" }}
-                      </small>
-                    </td>
-                    <td>
-                      <div
-                        class="text-truncate"
-                        style="max-width: 200px"
-                        [title]="incidencia.descripcionProblema"
-                      >
-                        {{ incidencia.descripcionProblema }}
-                      </div>
-                    </td>
-                    <td class="text-center">
+                            incidencia.codigoEquipo
+                          }}</span>
+                  </td>
+                  <td>
+                    <small class="text-muted">
+                      {{ incidencia.fechaRegistro | date : "dd/MM/yyyy" }}
+                      <br/>
+                      {{ incidencia.fechaRegistro | date : "HH:mm" }}
+                    </small>
+                  </td>
+                  <td>
+                    <div
+                      class="text-truncate"
+                      style="max-width: 200px"
+                      [title]="incidencia.descripcionProblema"
+                    >
+                      {{ incidencia.descripcionProblema }}
+                    </div>
+                  </td>
+                  <td class="text-center">
                       <span
                         class="badge rounded-pill px-3 py-2"
                         [ngClass]="getEstadoClass(incidencia.estado)"
@@ -140,38 +140,296 @@
                         ></i>
                         {{ incidencia.estado }}
                       </span>
-                    </td>
-                    <td class="text-center">
+                  </td>
+                  <td class="text-center">
                       <span
                         class="badge rounded-pill px-3 py-2"
                         [ngClass]="getPrioridadClass(incidencia.prioridad)"
                       >
                         {{ incidencia.prioridad }}
                       </span>
-                    </td>
-                    <td class="text-center">
-                      <div class="btn-group shadow-sm" role="group">
-                        <button
-                          class="btn btn-outline-primary btn-sm"
-                          (click)="verDetalles(incidencia)"
-                          title="Ver detalles"
-                        >
-                          <i class="bi bi-eye"></i>
-                        </button>
-                        <button
-                          class="btn btn-outline-warning btn-sm"
-                          (click)="abrirSolicitudRepuestos(incidencia)"
-                          title="Solicitar repuestos"
-                          data-bs-toggle="modal"
-                          data-bs-target="#modalSolicitudRepuestos"
-                        >
-                          <i class="bi bi-tools"></i>
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
+                  </td>
+                  <td class="text-center">
+                    <div class="btn-group shadow-sm" role="group">
+                      <button
+                        class="btn btn-outline-primary btn-sm"
+                        (click)="verDetalles(incidencia)"
+                        title="Ver detalles"
+                      >
+                        <i class="bi bi-eye"></i>
+                      </button>
+                      <button
+                        class="btn btn-outline-warning btn-sm"
+                        (click)="abrirSolicitudRepuestos(incidencia)"
+                        title="Solicitar repuestos"
+                        data-bs-toggle="modal"
+                        data-bs-target="#modalSolicitudRepuestos"
+                      >
+                        <i class="bi bi-tools"></i>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
                 </tbody>
               </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sección de Mis Solicitudes de Repuestos -->
+        <div class="card border-0 shadow-sm mt-4">
+          <div class="card-header bg-info text-white">
+            <div class="d-flex align-items-center justify-content-between">
+              <h5 class="mb-0">
+                <i class="bi bi-gear-fill me-2"></i>Mis Solicitudes de Repuestos
+              </h5>
+              <button class="btn btn-light btn-sm" (click)="cargarMisSolicitudes()">
+                <i class="bi bi-arrow-clockwise"></i> Actualizar
+              </button>
+            </div>
+          </div>
+
+          <div class="card-body p-0">
+            <!-- Estado de carga -->
+            <div *ngIf="cargando" class="text-center py-4">
+              <div class="spinner-border text-info" role="status">
+                <span class="visually-hidden">Cargando...</span>
+              </div>
+            </div>
+
+            <!-- Mensajes -->
+            <div *ngIf="mensajeSolicitud" class="alert alert-success m-3">
+              <i class="bi bi-check-circle-fill me-2"></i>{{ mensajeSolicitud }}
+            </div>
+            <div *ngIf="errorSolicitud" class="alert alert-danger m-3">
+              <i class="bi bi-exclamation-triangle-fill me-2"></i>{{ errorSolicitud }}
+            </div>
+
+            <!-- Lista de solicitudes -->
+            <div *ngIf="misSolicitudes && misSolicitudes.length > 0; else noSolicitudes">
+              <div class="table-responsive">
+                <!-- Tabla de solicitudes del técnico CORREGIDA -->
+                <table class="table table-hover table-bordered align-middle">
+                  <thead class="table-warning">
+                  <tr>
+                    <th>ID</th>
+                    <th>Código</th>
+                    <th>Repuesto</th>
+                    <th>Descripción</th>
+                    <th>Cantidad</th>
+                    <th>Estado</th>
+                    <th>Fecha</th>
+                    <th>Acción</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr *ngFor="let solicitud of misSolicitudes">
+                    <td><span class="badge bg-secondary">#{{ solicitud.id }}</span></td>
+
+                    <!-- CAMBIO: Usar detalles array para obtener la info del repuesto -->
+                    <td>
+                      <code *ngIf="solicitud.detalles && solicitud.detalles.length > 0; else noCode">
+                        {{ solicitud.detalles[0].codigoRepuesto }}
+                      </code>
+                      <ng-template #noCode><span class="text-muted">Sin código</span></ng-template>
+                    </td>
+
+                    <td>
+                        <span *ngIf="solicitud.detalles && solicitud.detalles.length > 0; else noName">
+                          {{ solicitud.detalles[0].nombreRepuesto }}
+                        </span>
+                      <ng-template #noName><span class="text-muted">Sin nombre</span></ng-template>
+                    </td>
+
+                    <td class="small">
+                        <span *ngIf="solicitud.detalles && solicitud.detalles.length > 0; else noDesc">
+                          {{ solicitud.detalles[0].descripcionRepuesto }}
+                        </span>
+                      <ng-template #noDesc><span class="text-muted">Sin descripción</span></ng-template>
+                    </td>
+
+                    <td>
+                        <span class="badge bg-info" *ngIf="solicitud.detalles && solicitud.detalles.length > 0; else noCant">
+                          {{ solicitud.detalles[0].cantidad }}
+                        </span>
+                      <ng-template #noCant><span class="badge bg-secondary">0</span></ng-template>
+                    </td>
+
+                    <td>
+                        <span class="badge" [ngClass]="solicitud.estado === 'PENDIENTE' ? 'bg-warning text-dark' :
+                                              solicitud.estado === 'ATENDIDO' ? 'bg-success' : 'bg-danger'">
+                          {{ solicitud.estado }}
+                        </span>
+                    </td>
+
+                    <td><small>{{ solicitud.fechaSolicitud | date:'dd/MM/yyyy HH:mm' }}</small></td>
+
+                    <td class="text-center">
+                      <button *ngIf="solicitud.estado === 'PENDIENTE'"
+                              class="btn btn-sm btn-outline-primary"
+                              (click)="editarSolicitud(solicitud)"
+                              title="Editar solicitud">
+                        <i class="bi bi-pencil-square"></i>
+                      </button>
+                      <span *ngIf="solicitud.estado !== 'PENDIENTE'"
+                            class="text-muted small">
+                          No editable
+                        </span>
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <ng-template #noSolicitudes>
+              <div class="text-center py-5">
+                <i class="bi bi-inbox display-4 text-muted"></i>
+                <h6 class="text-muted mt-3">No tienes solicitudes de repuestos</h6>
+                <p class="text-muted small">Las solicitudes que envíes aparecerán aquí</p>
+              </div>
+            </ng-template>
+          </div>
+        </div>
+
+        <!-- Modal para editar solicitud -->
+        <div class="modal fade" id="modalEditarSolicitud" tabindex="-1" aria-labelledby="modalEditarSolicitudLabel"
+             aria-hidden="true">
+          <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+              <div class="modal-header bg-warning text-dark">
+                <h5 class="modal-title" id="modalEditarSolicitudLabel">
+                  <i class="bi bi-pencil-square me-2"></i>Editar Solicitud de Repuestos #{{ solicitudEditando?.id }}
+                </h5>
+                <button type="button" class="btn-close" (click)="cancelarEdicionSolicitud()"></button>
+              </div>
+              <div class="modal-body" *ngIf="solicitudEditando">
+
+                <!-- Mensajes -->
+                <div *ngIf="mensajeSolicitud" class="alert alert-success">
+                  <i class="bi bi-check-circle-fill me-2"></i>{{ mensajeSolicitud }}
+                </div>
+                <div *ngIf="errorSolicitud" class="alert alert-danger">
+                  <i class="bi bi-exclamation-triangle-fill me-2"></i>{{ errorSolicitud }}
+                </div>
+
+                <!-- Información de la solicitud -->
+                <div class="alert alert-info">
+                  <strong>Solicitud ID:</strong> {{ solicitudEditando.id }}<br>
+                  <strong>Incidencia:</strong> #{{ solicitudEditando.idIncidencia }}<br>
+                  <strong>Estado actual:</strong> {{ solicitudEditando.estado }}<br>
+                  <strong>Fecha:</strong> {{ solicitudEditando.fechaSolicitud | date:'dd/MM/yyyy HH:mm' }}
+                </div>
+
+                <!-- Repuesto actualmente solicitado -->
+                <div *ngIf="repuestosSolicitados.length > 0">
+                  <h6 class="text-primary">Repuesto Actual:</h6>
+                  <div class="card border-primary mb-3" *ngFor="let repuesto of repuestosSolicitados; let i = index">
+                    <div class="card-body">
+                      <div class="row align-items-center">
+                        <div class="col-md-3">
+                          <strong>Código:</strong><br>
+                          <span class="badge bg-primary">{{ repuesto.codigoRepuesto }}</span>
+                        </div>
+                        <div class="col-md-4">
+                          <strong>Repuesto:</strong><br>
+                          {{ repuesto.nombre }}
+                        </div>
+                        <div class="col-md-2">
+                          <strong>Cantidad:</strong><br>
+                          <input type="number" class="form-control form-control-sm"
+                                 [(ngModel)]="repuesto.cantidadSolicitada"
+                                 min="1" [max]="repuesto.cantidad">
+                        </div>
+                        <div class="col-md-3 text-end">
+                          <button class="btn btn-outline-danger btn-sm" (click)="quitarRepuesto(repuesto)">
+                            <i class="bi bi-trash me-1"></i>Cambiar Repuesto
+                          </button>
+                        </div>
+                      </div>
+                      <div class="row mt-2">
+                        <div class="col-12">
+                          <small class="text-muted">{{ repuesto.descripcion }}</small>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Agregar repuestos (solo si no hay ninguno o se quitó el actual) -->
+                <div *ngIf="repuestosSolicitados.length === 0">
+                  <h6 class="text-success">Seleccionar nuevo repuesto:</h6>
+
+                  <!-- Buscador de repuestos -->
+                  <div class="row mb-3">
+                    <div class="col-md-12">
+                      <input type="text" class="form-control"
+                             [(ngModel)]="busquedaRepuesto"
+                             (keyup)="buscarRepuestos()"
+                             placeholder="Buscar repuesto por nombre...">
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-12">
+                      <div class="table-responsive" style="max-height: 200px;">
+                        <table class="table table-sm table-hover">
+                          <thead class="table-secondary">
+                          <tr>
+                            <th>Código</th>
+                            <th>Nombre</th>
+                            <th>Descripción</th>
+                            <th>Stock</th>
+                            <th>Acción</th>
+                          </tr>
+                          </thead>
+                          <tbody>
+                          <tr *ngFor="let repuesto of repuestosDisponibles">
+                            <td>{{ repuesto.codigoRepuesto }}</td>
+                            <td>{{ repuesto.nombre }}</td>
+                            <td class="small">{{ repuesto.descripcion }}</td>
+                            <td>
+                              <span class="badge" [ngClass]="{
+                                'bg-success': repuesto.cantidad > 10,
+                                'bg-warning': repuesto.cantidad <= 10 && repuesto.cantidad > 0,
+                                'bg-danger': repuesto.cantidad === 0
+                              }">{{ repuesto.cantidad }}</span>
+                            </td>
+                            <td>
+                              <button class="btn btn-sm btn-outline-primary"
+                                      (click)="agregarRepuesto(repuesto)"
+                                      [disabled]="repuesto.cantidad === 0">
+                                <i class="bi bi-plus-circle"></i> Seleccionar
+                              </button>
+                            </td>
+                          </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Aviso de limitación -->
+                <div class="alert alert-info py-2 mt-3">
+                  <small>
+                    <i class="bi bi-info-circle me-1"></i>
+                    Solo se puede solicitar 1 repuesto por vez. Para cambiar repuesto, quita el actual y agrega otro.
+                  </small>
+                </div>
+
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" (click)="cancelarEdicionSolicitud()">
+                  Cancelar
+                </button>
+                <button type="button"
+                        class="btn btn-warning"
+                        (click)="guardarCambiosSolicitud()"
+                        [disabled]="repuestosSolicitados.length === 0">
+                  <i class="bi bi-check-circle-fill me-2"></i>Guardar Cambios
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -222,7 +480,7 @@
               <i class="bi bi-tools me-2"></i>Solicitud de Repuestos
             </h4>
             <small class="opacity-75"
-              >Seleccione los repuestos necesarios para la reparación</small
+            >Seleccione los repuestos necesarios para la reparación</small
             >
           </div>
           <button
@@ -245,7 +503,7 @@
                   <h6 class="text-primary mb-2">
                     <i class="bi bi-ticket-detailed me-2"></i>Incidencia #{{
                       incidenciaSeleccionada.idIncidencia ||
-                        incidenciaSeleccionada.id
+                      incidenciaSeleccionada.id
                     }}
                   </h6>
                 </div>
@@ -288,33 +546,33 @@
                   <div class="table-responsive" style="max-height: 400px">
                     <table class="table table-hover mb-0">
                       <thead class="table-light sticky-top">
-                        <tr>
-                          <th class="fw-bold">Código</th>
-                          <th class="fw-bold">Nombre</th>
-                          <th class="fw-bold">Stock</th>
-                          <th class="fw-bold text-center">Acción</th>
-                        </tr>
+                      <tr>
+                        <th class="fw-bold">Código</th>
+                        <th class="fw-bold">Nombre</th>
+                        <th class="fw-bold">Stock</th>
+                        <th class="fw-bold text-center">Acción</th>
+                      </tr>
                       </thead>
                       <tbody>
-                        <tr
-                          *ngFor="let repuesto of repuestosDisponibles"
-                          [class.table-warning]="repuesto.cantidad <= 5"
-                          [class.table-danger]="repuesto.cantidad === 0"
-                        >
-                          <td class="fw-bold text-primary">
-                            {{ repuesto.codigoRepuesto }}
-                          </td>
-                          <td>
-                            <div>
-                              <div class="fw-semibold">
-                                {{ repuesto.nombre }}
-                              </div>
-                              <small class="text-muted">{{
+                      <tr
+                        *ngFor="let repuesto of repuestosDisponibles"
+                        [class.table-warning]="repuesto.cantidad <= 5"
+                        [class.table-danger]="repuesto.cantidad === 0"
+                      >
+                        <td class="fw-bold text-primary">
+                          {{ repuesto.codigoRepuesto }}
+                        </td>
+                        <td>
+                          <div>
+                            <div class="fw-semibold">
+                              {{ repuesto.nombre }}
+                            </div>
+                            <small class="text-muted">{{
                                 repuesto.descripcion
                               }}</small>
-                            </div>
-                          </td>
-                          <td>
+                          </div>
+                        </td>
+                        <td>
                             <span
                               class="badge"
                               [ngClass]="
@@ -327,17 +585,17 @@
                             >
                               {{ repuesto.cantidad }}
                             </span>
-                          </td>
-                          <td class="text-center">
-                            <button
-                              class="btn btn-success btn-sm px-3"
-                              (click)="agregarRepuesto(repuesto)"
-                              [disabled]="repuesto.cantidad === 0"
-                            >
-                              <i class="bi bi-plus-lg me-1"></i>Agregar
-                            </button>
-                          </td>
-                        </tr>
+                        </td>
+                        <td class="text-center">
+                          <button
+                            class="btn btn-success btn-sm px-3"
+                            (click)="agregarRepuesto(repuesto)"
+                            [disabled]="repuesto.cantidad === 0"
+                          >
+                            <i class="bi bi-plus-lg me-1"></i>Agregar
+                          </button>
+                        </td>
+                      </tr>
                       </tbody>
                     </table>
                   </div>
@@ -352,7 +610,7 @@
                   <h6 class="mb-0">
                     <i class="bi bi-cart3 me-2"></i>Repuesto Seleccionado
                     <span class="badge bg-dark ms-2"
-                      >{{ repuestosSolicitados.length }}/1</span
+                    >{{ repuestosSolicitados.length }}/1</span
                     >
                   </h6>
                 </div>
@@ -381,8 +639,8 @@
                                 {{ repuesto.codigoRepuesto }}
                               </h6>
                               <small class="text-muted d-block">{{
-                                repuesto.nombre
-                              }}</small>
+                                  repuesto.nombre
+                                }}</small>
                             </div>
                             <button
                               class="btn btn-outline-danger btn-sm"
@@ -394,7 +652,7 @@
                           <div class="row align-items-center">
                             <div class="col-8">
                               <label class="form-label small mb-1"
-                                >Cantidad:</label
+                              >Cantidad:</label
                               >
                               <input
                                 type="number"
@@ -406,7 +664,7 @@
                             </div>
                             <div class="col-4 text-end">
                               <small class="text-muted"
-                                >Max: {{ repuesto.cantidad }}</small
+                              >Max: {{ repuesto.cantidad }}</small
                               >
                             </div>
                           </div>

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+import {HttpClient, HttpErrorResponse, HttpHeaders, HttpParams} from '@angular/common/http';
 import { Observable, catchError, map, throwError } from 'rxjs';
 import { IncidenciaInterface } from '../interfaces/incidencia.interface';
 import { RegistroIncidenciaInterface } from '../interfaces/registro-incidencia.interface';
@@ -7,6 +7,7 @@ import { CategoriaInterface } from '../interfaces/categoria.interface';
 import { SubcategoriaInterface } from '../interfaces/subcategoria.interface';
 import { ProblemaInterface } from '../interfaces/problema.interface';
 import { SolucionRequest } from '../interfaces/Solucion.Interface';
+import {ReporteIncidenciaInterface} from '../interfaces/reporte-incidencia.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -179,7 +180,7 @@ export class IncidenciaService {
     );
   }
 
-  
+
   // Obtener la incidencia
   getIncidenciaPorId(id: number): Observable<IncidenciaInterface> {
     return this.http.get<IncidenciaInterface>(`${this.apiUrl}/incidencias/publica/${id}`);
@@ -192,7 +193,23 @@ export class IncidenciaService {
       .pipe(catchError(this.handleError));
   }
 
+  generarReporteIncidencias(fechaInicio?: string, fechaFin?: string): Observable<ReporteIncidenciaInterface[]> {
+    let params = new HttpParams();
+    if (fechaInicio) {
+      params = params.set('fechaInicio', fechaInicio);
+    }
+    if (fechaFin) {
+      params = params.set('fechaFin', fechaFin);
+    }
 
+    return this.http.get<ReporteIncidenciaInterface[]>(`${this.apiUrl}/incidencias/reporte`, { params })
+      .pipe(catchError(this.handleError));
+  }
+
+  editarIncidenciaPublica(idIncidencia: number, correo: string, datos: any): Observable<any> {
+    return this.http.put(`${this.apiUrl}/incidencias/editar-publica/${idIncidencia}?correo=${correo}`, datos)
+      .pipe(catchError(this.handleError));
+  }
 
   private handleError(error: HttpErrorResponse) {
     console.error('Error en la solicitud HTTP:', error);
@@ -219,7 +236,7 @@ export class IncidenciaService {
     return this.http.put(url, incidencia)
       .pipe(catchError(this.handleError));
   }
-  
+
   // Obtener soluciones disponibles para una incidencia
   obtenerSolucionesPorId(idIncidencia: number): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/incidencias/${idIncidencia}/soluciones`);

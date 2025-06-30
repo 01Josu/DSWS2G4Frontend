@@ -1,0 +1,239 @@
+<div class="container-fluid mt-4">
+  <div class="row">
+    <div class="col-12">
+
+
+      <!-- Controles de Filtro y Fecha -->
+      <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+          <h5 class="mb-0"><i class="bi bi-funnel me-2"></i>Filtros y Configuración</h5>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <!-- Filtros de Fecha -->
+            <div class="col-md-3">
+              <label class="form-label">Fecha Inicio</label>
+              <input
+                type="date"
+                class="form-control"
+                [(ngModel)]="fechaInicio"
+                name="fechaInicio">
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">Fecha Fin</label>
+              <input
+                type="date"
+                class="form-control"
+                [(ngModel)]="fechaFin"
+                name="fechaFin">
+            </div>
+            <div class="col-md-2 d-flex align-items-end">
+              <button
+                class="btn btn-primary w-100"
+                (click)="generarReporte()"
+                [disabled]="cargando">
+                <i class="bi bi-search me-1"></i>
+                {{ cargando ? 'Generando...' : 'Generar' }}
+              </button>
+            </div>
+            <div class="col-md-2 d-flex align-items-end">
+              <button
+                class="btn btn-success w-100"
+                (click)="exportarCSV()"
+                [disabled]="incidenciasFiltradas.length === 0">
+                <i class="bi bi-download me-1"></i>Exportar CSV
+              </button>
+            </div>
+          </div>
+
+          <hr>
+
+          <!-- Filtros Adicionales -->
+          <div class="row">
+            <div class="col-md-3">
+              <label class="form-label">Filtrar por Estado</label>
+              <select class="form-select" [(ngModel)]="filtroEstado" (change)="aplicarFiltros()" name="filtroEstado">
+                <option value="">Todos los estados</option>
+                <option value="pendiente">Pendiente</option>
+                <option value="en_proceso">En Proceso</option>
+                <option value="solucionado">Solucionado</option>
+              </select>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">Filtrar por Técnico</label>
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Nombre del técnico..."
+                [(ngModel)]="filtroTecnico"
+                (input)="aplicarFiltros()"
+                name="filtroTecnico">
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">Filtrar por Prioridad</label>
+              <select class="form-select" [(ngModel)]="filtroPrioridad" (change)="aplicarFiltros()" name="filtroPrioridad">
+                <option value="">Todas las prioridades</option>
+                <option value="2">Baja (2)</option>
+                <option value="3">Media-Baja (3)</option>
+                <option value="4">Media (4)</option>
+                <option value="5">Media-Alta (5)</option>
+                <option value="6">Alta (6)</option>
+                <option value="7">Muy Alta (7)</option>
+                <option value="8">Crítica (8+)</option>
+              </select>
+            </div>
+            <div class="col-md-3 d-flex align-items-end">
+              <button class="btn btn-outline-secondary w-100" (click)="limpiarFiltros()">
+                <i class="bi bi-arrow-clockwise me-1"></i>Limpiar Filtros
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Estadísticas -->
+      <div class="row mb-4">
+        <div class="col-md-3">
+          <div class="card bg-primary text-white">
+            <div class="card-body">
+              <div class="d-flex align-items-center">
+                <div class="flex-grow-1">
+                  <h6 class="mb-0">Total Incidencias</h6>
+                  <h2 class="mb-0">{{ totalIncidencias }}</h2>
+                </div>
+                <i class="bi bi-list-task fs-1 opacity-50"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card bg-secondary text-white">
+            <div class="card-body">
+              <div class="d-flex align-items-center">
+                <div class="flex-grow-1">
+                  <h6 class="mb-0">Pendientes</h6>
+                  <h2 class="mb-0">{{ incidenciasPendientes }}</h2>
+                </div>
+                <i class="bi bi-hourglass-split fs-1 opacity-50"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card bg-warning text-dark">
+            <div class="card-body">
+              <div class="d-flex align-items-center">
+                <div class="flex-grow-1">
+                  <h6 class="mb-0">En Proceso</h6>
+                  <h2 class="mb-0">{{ incidenciasEnProceso }}</h2>
+                </div>
+                <i class="bi bi-arrow-repeat fs-1 opacity-50"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card bg-success text-white">
+            <div class="card-body">
+              <div class="d-flex align-items-center">
+                <div class="flex-grow-1">
+                  <h6 class="mb-0">Solucionadas</h6>
+                  <h2 class="mb-0">{{ incidenciasSolucionadas }}</h2>
+                </div>
+                <i class="bi bi-check-circle-fill fs-1 opacity-50"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mensaje -->
+      <div *ngIf="mensaje" class="alert alert-info">
+        <i class="bi bi-info-circle me-2"></i>{{ mensaje }}
+      </div>
+
+      <!-- Tabla de Incidencias -->
+      <div class="card" *ngIf="incidenciasFiltradas.length > 0">
+        <div class="card-header bg-dark text-white">
+          <h5 class="mb-0"><i class="bi bi-table me-2"></i>Detalle de Incidencias</h5>
+        </div>
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table table-hover table-striped mb-0">
+              <thead class="table-dark">
+              <tr>
+                <th>ID</th>
+                <th>Equipo</th>
+                <th>Solicitante</th>
+                <th>Problema</th>
+                <th>Estado</th>
+                <th>Técnico</th>
+                <th>Prioridad</th>
+                <th>Fecha</th>
+                <th>Modalidad</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr *ngFor="let inc of incidenciasFiltradas">
+                <td class="fw-bold text-primary">#{{ inc.idIncidencia }}</td>
+                <td>
+                  <code>{{ inc.codigoEquipo }}</code>
+                </td>
+                <td>
+                  <small>{{ inc.correoSolicitante }}</small>
+                </td>
+                <td>
+                  <div class="text-truncate" style="max-width: 200px;" [title]="inc.problema">
+                    {{ inc.problema }}
+                  </div>
+                  <small class="text-muted">{{ inc.categoria }} > {{ inc.subcategoria }}</small>
+                </td>
+                <td>
+                    <span class="badge rounded-pill" [ngClass]="getEstadoClass(inc.estado)">
+                      {{ inc.estado | titlecase }}
+                    </span>
+                </td>
+                <td>
+                    <span *ngIf="inc.tecnicoAsignado; else sinAsignar" class="text-success">
+                      <i class="bi bi-person-check me-1"></i>{{ inc.tecnicoAsignado }}
+                    </span>
+                  <ng-template #sinAsignar>
+                      <span class="text-muted">
+                        <i class="bi bi-person-dash me-1"></i>Sin asignar
+                      </span>
+                  </ng-template>
+                </td>
+                <td>
+                    <span class="badge rounded-pill" [ngClass]="getPrioridadClass(inc.prioridad)">
+                      {{ inc.prioridad }}
+                    </span>
+                </td>
+                <td>
+                  <small>
+                    {{ inc.fechaRegistro | date:'dd/MM/yyyy' }}<br>
+                    {{ inc.fechaRegistro | date:'HH:mm' }}
+                  </small>
+                </td>
+                <td>
+                    <span class="badge" [ngClass]="inc.modalidadAtencion === 'remoto' ? 'bg-info' : 'bg-warning text-dark'">
+                      <i class="bi" [ngClass]="inc.modalidadAtencion === 'remoto' ? 'bi-wifi' : 'bi-tools'"></i>
+                      {{ inc.modalidadAtencion | titlecase }}
+                    </span>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Estado de carga -->
+      <div *ngIf="cargando" class="text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Cargando...</span>
+        </div>
+        <p class="mt-2">Generando reporte...</p>
+      </div>
+    </div>
+  </div>
+</div>
