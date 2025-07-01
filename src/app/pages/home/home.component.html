@@ -2,45 +2,65 @@
   <div class="container text-center">
     <h1 class="display-4 fw-bold animate__animated animate__fadeInUp">Bienvenidos a Incidencias SAC</h1>
 
-    <!-- Campo de búsqueda de incidencia -->
+    <!-- Campo de búsqueda por ID -->
     <div class="d-flex justify-content-center mt-3 animate__animated animate__fadeInUp animate__delay-1s">
-      <div class="input-group input-group-lg" style="max-width: 500px;">
-        <input
-          type="number"
-          [(ngModel)]="codigoBusqueda"
-          class="form-control"
-          placeholder="Buscar ID de incidencia"
-          aria-label="Buscar incidencia"
-        >
+      <div class="input-group" style="max-width: 500px;">
+        <input type="number" class="form-control form-control-lg"
+               placeholder="Ingrese el ID de la incidencia"
+               [(ngModel)]="codigoBusqueda">
         <button class="btn btn-dark" type="button" (click)="buscarIncidencia()">
-          <i class="bi bi-search"></i>
+          <i class="bi bi-search me-1"></i>
+        </button>
+        <button class="btn btn-danger btn-lg" type="button" (click)="limpiarResultados()">
+          <i class="bi bi-x-circle"></i>
         </button>
       </div>
     </div>
 
     <!-- Resultado encontrado -->
-    <div *ngIf="incidenciaEncontrada" class="alert alert-info mt-4 text-start mx-auto animate__animated animate__fadeInUp" style="max-width: 600px;">
-      <h6><strong>Incidencia encontrada:</strong></h6>
-      <p><strong>ID:</strong> {{ incidenciaEncontrada.idIncidencia }}</p>
-      <p><strong>Estado:</strong> {{ incidenciaEncontrada.estado }}</p>
-      <p><strong>Problema:</strong> {{ incidenciaEncontrada.descripcionProblema }}</p>
-      <p><strong>Fecha:</strong> {{ incidenciaEncontrada.fechaRegistro | date:'dd/MM/yyyy' }}</p>
+    <div *ngIf="incidenciaEncontrada" class="alert alert-info mt-4 text-start mx-auto animate__animated animate__fadeInUp" style="max-width: 700px;">
+      <div class="row align-items-center">
+        <div class="col-md-8">
+          <h6><strong>Incidencia encontrada:</strong></h6>
+          <p class="mb-1"><strong>ID:</strong> {{ incidenciaEncontrada.idIncidencia || incidenciaEncontrada.id }}</p>
+          <p class="mb-1"><strong>Estado:</strong> {{ incidenciaEncontrada.estado }}</p>
+          <p class="mb-1"><strong>Problema:</strong> {{ incidenciaEncontrada.descripcionProblema || incidenciaEncontrada.problemaSubcategoria?.descripcionProblema }}</p>
+          <p class="mb-1"><strong>Fecha:</strong> {{ incidenciaEncontrada.fechaRegistro || incidenciaEncontrada.fecha | date:'dd/MM/yyyy' }}</p>
+          <small class="text-muted" *ngIf="incidenciaEncontrada.asignacion">
+            <strong>Técnico asignado:</strong> {{ incidenciaEncontrada.asignacion.tecnico?.empleado?.username }}
+          </small>
+        </div>
 
-      <!-- AGREGAR ENLACE PARA EDITAR -->
-      <div class="mt-3">
-        <a [routerLink]="['/incidencia', incidenciaEncontrada.idIncidencia, 'editar']" class="btn btn-warning me-2">
-          <i class="bi bi-pencil-square me-1"></i>Editar Incidencia
-        </a>
-        <button class="btn btn-danger" (click)="enviarAlerta()"
-                *ngIf="incidenciaEncontrada.estado !== 'solucionado'">
-          <i class="bi bi-exclamation-triangle me-1"></i>Enviar Alerta
-        </button>
+        <div class="col-md-4">
+          <!-- Si puede editarse: mostrar ambos botones -->
+          <div *ngIf="puedeEditarse(incidenciaEncontrada)" class="d-grid gap-2">
+            <button class="btn btn-warning btn-sm" (click)="abrirModalEdicion(incidenciaEncontrada)">
+              <i class="bi bi-pencil-square me-1"></i>Editar Incidencia
+            </button>
+            <button class="btn btn-danger btn-sm" (click)="enviarAlerta()"
+                    *ngIf="incidenciaEncontrada.estado !== 'solucionado'">
+              <i class="bi bi-exclamation-triangle me-1"></i>Enviar Alerta
+            </button>
+          </div>
+
+          <!-- Si ya está asignada: solo mostrar alerta -->
+          <div *ngIf="!puedeEditarse(incidenciaEncontrada)" class="d-grid">
+            <button class="btn btn-danger btn-sm" (click)="enviarAlerta()"
+                    *ngIf="incidenciaEncontrada.estado !== 'solucionado'">
+              <i class="bi bi-exclamation-triangle me-1"></i>Enviar Alerta
+            </button>
+            <small class="text-muted mt-2 text-center">
+              <i class="bi bi-info-circle"></i>
+              {{ incidenciaEncontrada.asignacion ? 'Incidencia ya asignada' : 'No editable' }}
+            </small>
+          </div>
+        </div>
       </div>
     </div>
 
-    <!-- Mensaje de error -->
+    <!-- Mensaje de error o información -->
     <div *ngIf="mensajeBusqueda" class="alert alert-warning mt-4 mx-auto text-center animate__animated animate__fadeInUp" style="max-width: 500px;">
-      {{ mensajeBusqueda }}
+      <i class="bi bi-info-circle me-2"></i>{{ mensajeBusqueda }}
     </div>
 
     <p class="lead animate__animated animate__fadeInUp animate__delay-1s">
@@ -51,37 +71,94 @@
   </div>
 </header>
 
-<!-- Sección Sobre Nosotros -->
+<!-- Modal de Edición -->
+<div class="modal fade" id="modalEditarIncidencia" tabindex="-1" aria-labelledby="modalEditarIncidenciaLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header bg-warning text-dark">
+        <h5 class="modal-title" id="modalEditarIncidenciaLabel">
+          <i class="bi bi-pencil-square me-2"></i>Editar Incidencia #{{ incidenciaSeleccionada?.idIncidencia || incidenciaSeleccionada?.id }}
+        </h5>
+        <button type="button" class="btn-close" (click)="cerrarModal()"></button>
+      </div>
+      <div class="modal-body" *ngIf="incidenciaSeleccionada">
+        <!-- Mensajes -->
+        <div *ngIf="mensajeModal" class="alert alert-success">
+          <i class="bi bi-check-circle me-2"></i>{{ mensajeModal }}
+        </div>
+        <div *ngIf="errorModal" class="alert alert-danger">
+          <i class="bi bi-exclamation-triangle me-2"></i>{{ errorModal }}
+        </div>
+
+        <!-- Formulario de edición -->
+        <div class="row">
+          <div class="col-md-4">
+            <label class="form-label">Categoría</label>
+            <select class="form-select" [(ngModel)]="categoriaSeleccionada" (change)="onCategoriaChange()">
+              <option value="0">-- Seleccionar categoría --</option>
+              <option *ngFor="let cat of categorias" [value]="cat.id">{{ cat.nombre }}</option>
+            </select>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Subcategoría</label>
+            <select class="form-select" [(ngModel)]="subcategoriaSeleccionada" (change)="onSubcategoriaChange()">
+              <option value="0">-- Seleccionar subcategoría --</option>
+              <option *ngFor="let sub of subcategorias" [value]="sub.id">{{ sub.nombre }}</option>
+            </select>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Problema</label>
+            <select class="form-select" [(ngModel)]="problemaSeleccionado">
+              <option value="0">-- Seleccionar problema --</option>
+              <option *ngFor="let prob of problemas" [value]="prob.id">{{ prob.descripcion }}</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="cerrarModal()">Cancelar</button>
+        <button type="button" class="btn btn-warning" (click)="guardarCambios()">
+          <i class="bi bi-check-circle me-2"></i>Guardar Cambios
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Resto del contenido existente -->
 <section class="container py-5 fade-in animate__animated animate__fadeInUp animate__delay-2s">
   <div class="row text-center mb-5">
-    <div class="col">
-      <h2 class="fw-bold">Sobre Nosotros</h2>
-      <p class="text-muted">Nos dedicamos a brindar soluciones tecnológicas para mejorar la gestión de incidencias empresariales.</p>
+    <div class="col-lg-12">
+      <h2 class="fw-bold text-primary">Nuestra Misión</h2>
+      <p class="lead">Brindar un servicio eficiente y confiable para la gestión de incidencias tecnológicas, garantizando la continuidad operativa de nuestros clientes.</p>
     </div>
   </div>
 
   <div class="row text-center">
-    <div class="col-md-4 mb-4 animate__animated animate__fadeInLeft">
-      <div class="card h-100 border-0 shadow-sm">
+    <div class="col-lg-4 mb-4">
+      <div class="card h-100 shadow-sm">
         <div class="card-body">
-          <h5 class="card-title text-primary">Misión</h5>
-          <p class="card-text">Ofrecer un servicio eficiente y eficaz en la gestión de incidencias tecnológicas.</p>
+          <i class="bi bi-lightning-charge-fill text-primary display-4"></i>
+          <h5 class="card-title mt-3">Respuesta Rápida</h5>
+          <p class="card-text">Atención inmediata a todas las incidencias reportadas con tiempos de respuesta optimizados.</p>
         </div>
       </div>
     </div>
-    <div class="col-md-4 mb-4 animate__animated animate__fadeInUp">
-      <div class="card h-100 border-0 shadow-sm">
+    <div class="col-lg-4 mb-4">
+      <div class="card h-100 shadow-sm">
         <div class="card-body">
-          <h5 class="card-title text-success">Visión</h5>
-          <p class="card-text">Ser referentes en atención técnica y soporte en todo el país.</p>
+          <i class="bi bi-people-fill text-success display-4"></i>
+          <h5 class="card-title mt-3">Equipo Especializado</h5>
+          <p class="card-text">Técnicos calificados y experimentados listos para resolver cualquier problema tecnológico.</p>
         </div>
       </div>
     </div>
-    <div class="col-md-4 mb-4 animate__animated animate__fadeInRight">
-      <div class="card h-100 border-0 shadow-sm">
+    <div class="col-lg-4 mb-4">
+      <div class="card h-100 shadow-sm">
         <div class="card-body">
-          <h5 class="card-title text-warning">Valores</h5>
-          <p class="card-text">Compromiso, transparencia, profesionalismo e innovación continua.</p>
+          <i class="bi bi-graph-up-arrow text-info display-4"></i>
+          <h5 class="card-title mt-3">Mejora Continua</h5>
+          <p class="card-text">Seguimiento constante y análisis de métricas para mejorar nuestros servicios.</p>
         </div>
       </div>
     </div>
@@ -91,37 +168,46 @@
 <!-- Sección de Servicios -->
 <section class="container py-5 bg-light fade-in animate__animated animate__fadeInUp animate__delay-3s">
   <div class="row text-center mb-5">
-    <div class="col">
-      <h2 class="fw-bold">Nuestros Servicios</h2>
-      <p class="text-muted">Proveemos soluciones rápidas y efectivas para la gestión de incidencias en tu empresa.</p>
+    <div class="col-lg-12">
+      <h2 class="fw-bold text-primary">Nuestros Servicios</h2>
+      <p class="lead">Ofrecemos una gama completa de servicios para mantener tu infraestructura tecnológica funcionando perfectamente.</p>
     </div>
   </div>
 
   <div class="row">
-    <div class="col-md-4 mb-4">
-      <div class="card shadow-sm">
-        <div class="card-body text-center">
-          <i class="bi bi-clipboard-data fs-1 text-primary"></i>
-          <h5 class="card-title mt-3">Gestión de Incidencias</h5>
-          <p class="card-text">Automatiza el registro y seguimiento de incidencias en tu empresa de manera eficiente.</p>
+    <div class="col-lg-6 mb-4">
+      <div class="d-flex">
+        <i class="bi bi-tools text-primary fs-1 me-3"></i>
+        <div>
+          <h5>Soporte Técnico</h5>
+          <p>Asistencia técnica especializada para resolver problemas de hardware y software.</p>
         </div>
       </div>
     </div>
-    <div class="col-md-4 mb-4">
-      <div class="card shadow-sm">
-        <div class="card-body text-center">
-          <i class="bi bi-person-lines-fill fs-1 text-success"></i>
-          <h5 class="card-title mt-3">Atención al Cliente</h5>
-          <p class="card-text">Brinda un soporte al cliente más efectivo y organizado mediante nuestro sistema.</p>
+    <div class="col-lg-6 mb-4">
+      <div class="d-flex">
+        <i class="bi bi-shield-check text-success fs-1 me-3"></i>
+        <div>
+          <h5>Mantenimiento Preventivo</h5>
+          <p>Programas de mantenimiento para prevenir fallas y optimizar el rendimiento.</p>
         </div>
       </div>
     </div>
-    <div class="col-md-4 mb-4">
-      <div class="card shadow-sm">
-        <div class="card-body text-center">
-          <i class="bi bi-bar-chart-line-fill fs-1 text-warning"></i>
-          <h5 class="card-title mt-3">Análisis de Datos</h5>
-          <p class="card-text">Obtén informes detallados para tomar decisiones más informadas y mejorar tus procesos.</p>
+    <div class="col-lg-6 mb-4">
+      <div class="d-flex">
+        <i class="bi bi-headset text-info fs-1 me-3"></i>
+        <div>
+          <h5>Mesa de Ayuda 24/7</h5>
+          <p>Disponibilidad continua para atender emergencias y consultas técnicas.</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-6 mb-4">
+      <div class="d-flex">
+        <i class="bi bi-graph-up text-warning fs-1 me-3"></i>
+        <div>
+          <h5>Monitoreo Proactivo</h5>
+          <p>Supervisión constante de sistemas para detectar y prevenir problemas.</p>
         </div>
       </div>
     </div>
@@ -131,25 +217,31 @@
 <!-- Sección de Testimonios -->
 <section class="bg-dark text-white py-5 fade-in animate__animated animate__fadeInUp animate__delay-4s">
   <div class="container text-center">
-    <h2 class="fw-bold mb-4">Testimonios</h2>
+    <h2 class="fw-bold mb-4">Lo que dicen nuestros clientes</h2>
     <div class="row">
-      <div class="col-md-4">
-        <div class="testimonial">
-          <p class="lead">"El sistema de incidencias nos ha permitido mejorar nuestra atención al cliente, ¡es una herramienta indispensable!"</p>
-          <footer>- Juan Pérez, Gerente de Soporte</footer>
-        </div>
+      <div class="col-lg-4 mb-4">
+        <blockquote class="blockquote">
+          <p>"Excelente servicio, respuesta rápida y soluciones efectivas."</p>
+          <footer class="blockquote-footer">
+            <cite title="Source Title">María González, IT Manager</cite>
+          </footer>
+        </blockquote>
       </div>
-      <div class="col-md-4">
-        <div class="testimonial">
-          <p class="lead">"Gracias a esta solución, hemos reducido los tiempos de respuesta y hemos optimizado los recursos."</p>
-          <footer>- Ana Torres, Coordinadora de TI</footer>
-        </div>
+      <div class="col-lg-4 mb-4">
+        <blockquote class="blockquote">
+          <p>"El equipo técnico es muy profesional y conoce bien su trabajo."</p>
+          <footer class="blockquote-footer">
+            <cite title="Source Title">Carlos Rodríguez, CEO</cite>
+          </footer>
+        </blockquote>
       </div>
-      <div class="col-md-4">
-        <div class="testimonial">
-          <p class="lead">"La interfaz es muy amigable y el proceso de gestión de incidencias nunca fue tan fácil de implementar."</p>
-          <footer>- Carlos Sánchez, Jefe de Servicios</footer>
-        </div>
+      <div class="col-lg-4 mb-4">
+        <blockquote class="blockquote">
+          <p>"Gracias al sistema, podemos hacer seguimiento de todas nuestras incidencias."</p>
+          <footer class="blockquote-footer">
+            <cite title="Source Title">Ana Martínez, Supervisora</cite>
+          </footer>
+        </blockquote>
       </div>
     </div>
   </div>

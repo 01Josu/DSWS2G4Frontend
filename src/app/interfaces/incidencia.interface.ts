@@ -8,17 +8,26 @@ export interface IncidenciaInterface {
   descripcionProblema: string;
   estado: string;
   prioridad: number;
-  categoriaProblema: String;
-  subCategoria:String;
+  categoriaProblema: string;
+  subCategoria: string;
 
   problemaSubcategoria: {
     descripcionProblema: string;
-  },
+  };
+
   usuarioSolicitante: {
     correoNumero: string;
     equipo?: {
       codigoEquipo: string;
     };
   };
-}
 
+  // Propiedades para asignacion
+  asignacion?: {
+    tecnico: {
+      empleado: {
+        username: string;
+      };
+    };
+  } | null;
+}
