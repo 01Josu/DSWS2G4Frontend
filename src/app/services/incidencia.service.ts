@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+import {HttpClient, HttpErrorResponse, HttpHeaders, HttpParams} from '@angular/common/http';
 import { Observable, catchError, map, throwError } from 'rxjs';
 import { IncidenciaInterface } from '../interfaces/incidencia.interface';
 import { RegistroIncidenciaInterface } from '../interfaces/registro-incidencia.interface';
@@ -7,6 +7,7 @@ import { CategoriaInterface } from '../interfaces/categoria.interface';
 import { SubcategoriaInterface } from '../interfaces/subcategoria.interface';
 import { ProblemaInterface } from '../interfaces/problema.interface';
 import { SolucionRequest } from '../interfaces/Solucion.Interface';
+import {ReporteIncidenciaInterface} from '../interfaces/reporte-incidencia.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -65,29 +66,28 @@ export class IncidenciaService {
 
   obtenerIncidenciasTecnico(tecnicoId: number, numeroTicket?: string): Observable<IncidenciaInterface[]> {
     let url = `${this.apiUrl}/tecnico/incidencias/${tecnicoId}`;
+    let params = new HttpParams();
 
     if (numeroTicket) {
-      url += `?numeroTicket=${numeroTicket}`;
+      params = params.set('numeroTicket', numeroTicket);
     }
 
     console.log('URL para obtener incidencias:', url);
 
     const token = localStorage.getItem('token');
 
-    // Verificar que el token existe
     if (!token) {
       console.error('No hay token de autenticación');
       return throwError(() => new Error('No está autenticado. Por favor, inicie sesión nuevamente.'));
     }
 
     const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`  // Añadir "Bearer " antes del token
+      'Authorization': `Bearer ${token}`
     });
 
     console.log('Headers de autorización:', headers.get('Authorization'));
 
-    // Mostrar información detallada para depuración
-    return this.http.get<any>(url, { headers, observe: 'response' })
+    return this.http.get<any>(url, { headers, params, observe: 'response' })
       .pipe(
         map(fullResponse => {
           console.log('Estado de la respuesta:', fullResponse.status);
@@ -96,11 +96,9 @@ export class IncidenciaService {
 
           const response = fullResponse.body;
 
-          // Manejar distintos formatos de respuesta
           if (Array.isArray(response)) {
             return response;
           } else if (response && typeof response === 'object') {
-            // Buscar si hay una propiedad que contenga un array
             for (const key in response) {
               if (Array.isArray(response[key])) {
                 return response[key];
@@ -112,7 +110,6 @@ export class IncidenciaService {
         catchError(error => {
           console.error('Error detallado:', error);
 
-          // Agregar información más detallada para depuración
           if (error.status === 0) {
             console.error('Error de conexión al servidor. Verifique que el backend esté en ejecución.');
           } else {
@@ -156,13 +153,12 @@ export class IncidenciaService {
     );
   }
 
-
   asignarTecnico(idIncidencia: number, idTecnico: number): Observable<any> {
     const url = `http://localhost:8080/api/v1/asignacion`;
     const body = { idIncidencia, idTecnico };
 
     return this.http.post<string>(url, body, {
-      responseType: 'text' as 'json'  // ✅ ACEPTA texto plano del backend
+      responseType: 'text' as 'json'
     }).pipe(
       catchError(error => {
         console.error('Error al asignar técnico:', error);
@@ -171,7 +167,7 @@ export class IncidenciaService {
           console.error('Error de conexión al servidor.');
         } else {
           console.error('Código de estado:', error.status);
-          console.error('Mensaje de error:', error.error); // aquí también será texto
+          console.error('Mensaje de error:', error.error);
         }
 
         return this.handleError(error);
@@ -179,8 +175,6 @@ export class IncidenciaService {
     );
   }
 
-  
-  // Obtener la incidencia
   getIncidenciaPorId(id: number): Observable<IncidenciaInterface> {
     return this.http.get<IncidenciaInterface>(`${this.apiUrl}/incidencias/publica/${id}`);
   }
@@ -192,7 +186,101 @@ export class IncidenciaService {
       .pipe(catchError(this.handleError));
   }
 
+  generarReporteIncidencias(fechaInicio?: string, fechaFin?: string): Observable<ReporteIncidenciaInterface[]> {
+    let params = new HttpParams();
+    if (fechaInicio) {
+      params = params.set('fechaInicio', fechaInicio);
+    }
+    if (fechaFin) {
+      params = params.set('fechaFin', fechaFin);
+    }
 
+    return this.http.get<ReporteIncidenciaInterface[]>(`${this.apiUrl}/incidencias/reporte`, { params })
+      .pipe(catchError(this.handleError));
+  }
+
+  buscarIncidenciasPorCorreo(correo: string): Observable<IncidenciaInterface[]> {
+    // AGREGAR LOGS PARA DEBUG
+    console.log('Servicio - Buscando correo:', correo);
+    const url = `${this.apiUrl}/incidencias/seguimiento?correo=${encodeURIComponent(correo)}`;
+    console.log('URL generada:', url);
+
+    return this.http.get<any[]>(url)
+      .pipe(
+        map(response => {
+          console.log('Respuesta cruda del backend:', response);
+
+          if (!Array.isArray(response)) {
+            console.warn('La respuesta no es un array:', response);
+            return [];
+          }
+
+          return response.map((item: any) => ({
+            idIncidencia: item.idIncidencia,
+            id: item.idIncidencia,
+            correoSolicitante: correo,
+            estado: item.estado,
+            fechaRegistro: item.fechaRegistro,
+            fecha: item.fechaRegistro,
+            descripcionProblema: item.problema,
+            prioridad: item.prioridad || 1,
+            codigoEquipo: item.codigoEquipo || '',
+            categoriaProblema: item.categoria || '',
+            subCategoria: item.subcategoria || '',
+            usuarioSolicitante: {
+              correoNumero: correo
+            },
+            problemaSubcategoria: {
+              descripcionProblema: item.problema
+            },
+            asignacion: item.tecnicoAsignado ? {
+              tecnico: {
+                empleado: {
+                  username: item.tecnicoAsignado
+                }
+              }
+            } : null
+          }));
+        }),
+        catchError(error => {
+          console.error('Error en el servicio:', error);
+          return this.handleError(error);
+        })
+      );
+  }
+
+  editarIncidenciaPublica(idIncidencia: number, correo: string, datos: any): Observable<any> {
+    return this.http.put(`${this.apiUrl}/incidencias/editar-publica/${idIncidencia}?correo=${correo}`, datos)
+      .pipe(catchError(this.handleError));
+  }
+
+  // NUEVOS MÉTODOS FALTANTES
+  actualizarIncidencia(incidencia: IncidenciaInterface): Observable<any> {
+    const url = `${this.apiUrl}/incidencias/${incidencia.idIncidencia}`;
+    return this.http.put(url, incidencia)
+      .pipe(catchError(this.handleError));
+  }
+
+  obtenerSolucionesPorId(idIncidencia: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/incidencias/${idIncidencia}/soluciones`)
+      .pipe(catchError(this.handleError));
+  }
+
+  registrarSolucion(request: SolucionRequest): Observable<any> {
+    console.log('Request a enviar:', request);
+    return this.http.post<any>(`${this.apiUrl}/incidencias/solucion`, request)
+      .pipe(catchError(this.handleError));
+  }
+
+  getTodasIncidencias(): Observable<IncidenciaInterface[]> {
+    return this.http.get<IncidenciaInterface[]>(`${this.apiUrl}/incidencias`)
+      .pipe(catchError(this.handleError));
+  }
+
+  eliminarIncidencia(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/incidencias/${id}`)
+      .pipe(catchError(this.handleError));
+  }
 
   private handleError(error: HttpErrorResponse) {
     console.error('Error en la solicitud HTTP:', error);
@@ -212,32 +300,5 @@ export class IncidenciaService {
     }
 
     return throwError(() => new Error(errorMessage));
-  }
-
-  actualizarIncidencia(incidencia: IncidenciaInterface): Observable<any> {
-    const url = `${this.apiUrl}/incidencias/${incidencia.idIncidencia}`; // Ajusta la URL según tu backend
-    return this.http.put(url, incidencia)
-      .pipe(catchError(this.handleError));
-  }
-  
-  // Obtener soluciones disponibles para una incidencia
-  obtenerSolucionesPorId(idIncidencia: number): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/incidencias/${idIncidencia}/soluciones`);
-  }
-
-  // Registrar una solución aplicada a una incidencia
-  registrarSolucion(request: SolucionRequest): Observable<any> {
-    console.log('Request a enviar:', request);
-    return this.http.post<any>(`${this.apiUrl}/incidencias/solucion`, request);
-  }
-
-  getTodasIncidencias(): Observable<IncidenciaInterface[]> {
-    return this.http.get<IncidenciaInterface[]>(`${this.apiUrl}/incidencias`)
-      .pipe(catchError(this.handleError));
-  }
-
-  eliminarIncidencia(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/incidencias/${id}`)
-      .pipe(catchError(this.handleError));
   }
 }

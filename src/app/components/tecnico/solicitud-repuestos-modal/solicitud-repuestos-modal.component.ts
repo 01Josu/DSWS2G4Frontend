@@ -22,11 +22,11 @@ export class SolicitudRepuestosModalComponent implements OnInit {
   repuestos: RepuestoInterface[] = [];
   repuestosFiltrados: RepuestoInterface[] = [];
   solicitudDetalles: DetalleSolicitudInterface[] = [];
-  
+
   busquedaRepuesto: string = '';
   repuestoSeleccionado: RepuestoInterface | null = null;
   cantidadSolicitada: number = 1;
-  
+
   cargando: boolean = false;
   mensajeExito: string = '';
   mensajeError: string = '';
@@ -126,36 +126,36 @@ export class SolicitudRepuestosModalComponent implements OnInit {
 
     this.solicitudService.registrarSolicitud(solicitud).subscribe({
       next: (response) => {
-        this.mensajeExito = 'Solicitud de repuestos registrada exitosamente';
+        this.mensajeExito = 'Solicitud enviada exitosamente';
         this.solicitudDetalles = [];
         this.cargando = false;
-        
+
         // Cerrar modal después de 2 segundos
         setTimeout(() => {
           this.cerrarModal();
         }, 2000);
       },
       error: (error) => {
-        this.mensajeError = error.error || 'Error al registrar la solicitud';
+        this.mensajeError = 'Error al enviar solicitud: ' + (error.error?.message || error.message);
         this.cargando = false;
       }
     });
   }
 
   cerrarModal(): void {
-    // Cerrar el modal
-    const modal = document.getElementById('solicitudRepuestosModal');
-    if (modal) {
-      const bsModal = bootstrap.Modal.getInstance(modal);
-      if (bsModal) {
-        bsModal.hide();
+    const modalElement = document.getElementById('solicitudRepuestosModal');
+    if (modalElement) {
+      const modal = bootstrap.Modal.getInstance(modalElement);
+      if (modal) {
+        modal.hide();
       }
     }
-    
+
     // Limpiar datos
     this.solicitudDetalles = [];
+    this.repuestoSeleccionado = null;
     this.mensajeExito = '';
     this.mensajeError = '';
-    this.repuestoSeleccionado = null;
+    this.busquedaRepuesto = '';
   }
 }
