@@ -24,10 +24,10 @@
           <h6><strong>Incidencia encontrada:</strong></h6>
           <p class="mb-1"><strong>ID:</strong> {{ incidenciaEncontrada.idIncidencia || incidenciaEncontrada.id }}</p>
           <p class="mb-1"><strong>Estado:</strong> {{ incidenciaEncontrada.estado }}</p>
-          <p class="mb-1"><strong>Problema:</strong> {{ incidenciaEncontrada.descripcionProblema || incidenciaEncontrada.problemaSubcategoria?.descripcionProblema }}</p>
+          <p class="mb-1"><strong>Problema:</strong> {{ incidenciaEncontrada.descripcionProblema || incidenciaEncontrada.problemaSubcategoria.descripcionProblema }}</p>
           <p class="mb-1"><strong>Fecha:</strong> {{ incidenciaEncontrada.fechaRegistro || incidenciaEncontrada.fecha | date:'dd/MM/yyyy' }}</p>
           <small class="text-muted" *ngIf="incidenciaEncontrada.asignacion">
-            <strong>Técnico asignado:</strong> {{ incidenciaEncontrada.asignacion.tecnico?.empleado?.username }}
+            <strong>Técnico asignado:</strong> {{ incidenciaEncontrada.asignacion.tecnico.empleado.username }}
           </small>
         </div>
 

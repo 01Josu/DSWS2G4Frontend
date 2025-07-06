@@ -14,6 +14,7 @@ import { SolicitudRepuestoComponent } from './pages/logistica/solicitud-repuesto
 import { GestionarIncidenciasComponent } from './pages/gestionar-incidencias/gestionar-incidencias.component';
 import { GestionarUsuariosComponent } from './pages/gestionar-empleados/gestionar-empleados.component';
 import { ReporteIncidenciasComponent } from './components/reporte-incidencias/reporte-incidencias.component';
+import { DashboardJefeTecnicoComponent } from './pages/dashboard-jefe-tecnico/dashboard-jefe-tecnico.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -29,5 +30,7 @@ export const routes: Routes = [
   { path: 'jefe/asignar-incidencia', component: AsignarIncidenciaComponent, canActivate: [RolJefeGuard]},
   { path: 'jefe/incidencias', component: GestionarIncidenciasComponent, canActivate: [RolJefeGuard]},
   { path: 'jefe/usuarios', component: GestionarUsuariosComponent, canActivate: [RolJefeGuard]},
-  { path: 'reporte-incidencias', component: ReporteIncidenciasComponent, canActivate: [RolJefeGuard]}
+  { path: 'reporte-incidencias', component: ReporteIncidenciasComponent, canActivate: [RolJefeGuard]},
+  { path: 'dashboard-jefe-tecnico', component: DashboardJefeTecnicoComponent, canActivate: [RolJefeGuard]}
+
 ];
