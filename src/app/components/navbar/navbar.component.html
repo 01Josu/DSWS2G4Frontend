@@ -80,6 +80,13 @@
             </a>
           </li>
 
+          <li class="nav-item" *ngIf="isJefeArea()">
+            <a class="nav-link" routerLink="../dashboard-jefe-tecnico" routerLinkActive="active">
+              <i class="bi bi-list-stars me-1"></i> Dashboard
+            </a>
+          </li>
+
+
           <!-- Aquí está "Asignar Incidencias" para JEFE AREA -->
           <li class="nav-item" *ngIf="isJefeArea()">
             <a class="nav-link" routerLink="/jefe/asignar-incidencia" routerLinkActive="active">

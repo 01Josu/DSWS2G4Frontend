@@ -29,7 +29,7 @@
             <select class="form-select" [(ngModel)]="tecnicoSeleccionadoId">
               <option [ngValue]="null" disabled selected>-- Selecciona un técnico --</option>
               <option *ngFor="let tecnico of tecnicos" [value]="tecnico.id">
-                {{ tecnico.empleado.username }} (Tickets: {{ tecnico.cargaActual }})
+                {{ tecnico.nombre }} (Tickets: {{ tecnico.cargaActual }})
               </option>
             </select>
           </div>
@@ -61,7 +61,7 @@
               <tbody class="text-center">
                 <tr *ngFor="let tecnico of tecnicos">
                   <td>{{ tecnico.id }}</td>
-                  <td>{{ tecnico.empleado.username }}</td>
+                  <td>{{ tecnico.nombre }}</td>
                   <td>{{ tecnico.cargaActual }}</td>
                 </tr>
               </tbody>
