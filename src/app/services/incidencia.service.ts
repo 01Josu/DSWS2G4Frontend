@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpErrorResponse, HttpHeaders, HttpParams} from '@angular/common/http';
-import {Observable, catchError, map, throwError, of} from 'rxjs';
+import { Observable, catchError, map, throwError } from 'rxjs';
 import { IncidenciaInterface } from '../interfaces/incidencia.interface';
 import { RegistroIncidenciaInterface } from '../interfaces/registro-incidencia.interface';
 import { CategoriaInterface } from '../interfaces/categoria.interface';
@@ -13,36 +13,55 @@ import {ReporteIncidenciaInterface} from '../interfaces/reporte-incidencia.inter
   providedIn: 'root'
 })
 export class IncidenciaService {
-  private apiUrl = 'http://localhost:8080/api';
+  private apiUrl = 'http://localhost:8080/api/v1';
+  private catalogosUrl = 'http://localhost:8080/api/catalogos';
 
   constructor(private http: HttpClient) {}
 
-  // Método para buscar usuario por correo (SIN v1)
-  buscarUsuarioPorCorreo(correo: string): Observable<any> {
-    return this.http.get(`${this.apiUrl}/usuarios-solicitantes/buscar-por-correo`, {
-      params: { correo }
-    }).pipe(
-      catchError(error => {
-        console.error('Error al buscar usuario:', error);
-        return of(null);
-      })
-    );
-  }
-
   obtenerCategorias(): Observable<CategoriaInterface[]> {
-    return this.http.get<CategoriaInterface[]>(`http://localhost:8080/api/catalogos/categorias`);
+    return this.http.get<any[]>(`${this.catalogosUrl}/categorias`)
+      .pipe(
+        map(response => {
+          return response.map(item => ({
+            id: item.id || item.idCategoria || item.id_categoria,
+            nombre: item.nombre || item.nombreCategoria || item.nombre_categoria
+          }));
+        }),
+        catchError(this.handleError)
+      );
   }
 
   obtenerSubcategorias(categoriaId: number): Observable<SubcategoriaInterface[]> {
-    return this.http.get<SubcategoriaInterface[]>(`http://localhost:8080/api/catalogos/subcategorias/${categoriaId}`);
+    return this.http.get<any[]>(`${this.catalogosUrl}/subcategorias/${categoriaId}`)
+      .pipe(
+        map(response => {
+          return response.map(item => ({
+            id: item.id || item.idSubcategoria || item.id_subcategoria,
+            nombre: item.nombre || item.nombreSubcategoria || item.nombre_subcategoria,
+            categoriaId: item.categoriaId || item.idCategoria || categoriaId
+          }));
+        }),
+        catchError(this.handleError)
+      );
   }
 
   obtenerProblemas(subcategoriaId: number): Observable<ProblemaInterface[]> {
-    return this.http.get<ProblemaInterface[]>(`http://localhost:8080/api/catalogos/problemas/${subcategoriaId}`);
+    return this.http.get<any[]>(`${this.catalogosUrl}/problemas/${subcategoriaId}`)
+      .pipe(
+        map(response => {
+          return response.map(item => ({
+            id: item.id || item.idProblema || item.id_problema,
+            descripcion: item.descripcion || item.descripcionProblema || item.nombre,
+            subcategoriaId: item.subcategoriaId || item.idSubcategoria || subcategoriaId
+          }));
+        }),
+        catchError(this.handleError)
+      );
   }
 
-  registrarIncidenciaPublica(datos: any): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/incidencias/publica`, datos);
+  registrarIncidenciaPublica(datos: RegistroIncidenciaInterface): Observable<any> {
+    return this.http.post(`${this.apiUrl}/incidencias/publica`, datos)
+      .pipe(catchError(this.handleError));
   }
 
   obtenerIncidenciasTecnico(tecnicoId: number, numeroTicket?: string): Observable<IncidenciaInterface[]> {
