@@ -1,8 +1,25 @@
-<div id="chart">
-  <apx-chart
-    [series]="chartOptions.series"
-    [chart]="chartOptions.chart"
-    [xaxis]="chartOptions.xaxis"
-    [title]="chartOptions.title">
-  </apx-chart>
+<div class="card shadow mt-4">
+  <div class="card-body">
+    <apx-chart 
+      [series]="chartOptions.series"
+      [chart]="chartOptions.chart"
+      [xaxis]="chartOptions.xaxis"
+      [plotOptions]="chartOptions.plotOptions"
+      [dataLabels]="chartOptions.dataLabels"
+      [colors]="chartOptions.colors || []"
+      [title]="chartOptions.title"
+      [tooltip]="chartOptions.tooltip">
+    </apx-chart>
+    <apx-chart 
+      [series]="chartProblemas.series || []"
+      [chart]="chartProblemas.chart || { type: 'bar', height: 350 }"
+      [title]="chartProblemas.title || { text: '' }"
+      [plotOptions]="chartProblemas.plotOptions"
+      [dataLabels]="chartProblemas.dataLabels"
+      [xaxis]="chartProblemas.xaxis || { categories: [] }"
+      [colors]="chartProblemas.colors || []"
+      [tooltip]="chartProblemas.tooltip">
+    </apx-chart>
+  </div>
 </div>
+

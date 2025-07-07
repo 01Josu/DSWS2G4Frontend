@@ -7,13 +7,22 @@ export interface TicketsPorTecnico {
   total: number;
 }
 
+export interface ProblemasFrecuentes {
+  nombreProblema: string;
+  cantidad: number;
+}
+
 @Injectable({ providedIn: 'root' })
 export class DashboardService {
-  private apiUrl = 'http://TU_BACKEND/tickets-por-tecnico'; // Cambia la URL por la de tu API
+  private apiUrl = 'http://localhost:8080/api/v1';
 
   constructor(private http: HttpClient) {}
 
   getTicketsPorTecnico(): Observable<TicketsPorTecnico[]> {
-    return this.http.get<TicketsPorTecnico[]>(this.apiUrl);
+    return this.http.get<TicketsPorTecnico[]>(`${this.apiUrl}/estadisticas/tickets-tecnico`);
+  }
+
+  getProblemasFrecuentes() {
+    return this.http.get<ProblemasFrecuentes[]>(`${this.apiUrl}/estadisticas/problemas-frecuentes`);
   }
 }

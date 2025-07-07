@@ -1,7 +1,5 @@
 export interface TecnicoInterface {
     id: number;
-    empleado: {
-        username: string;
-    }
+    nombre: string;
     cargaActual: number;
 }
