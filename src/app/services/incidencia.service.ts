@@ -8,13 +8,14 @@ import { SubcategoriaInterface } from '../interfaces/subcategoria.interface';
 import { ProblemaInterface } from '../interfaces/problema.interface';
 import { SolucionRequest } from '../interfaces/Solucion.Interface';
 import {ReporteIncidenciaInterface} from '../interfaces/reporte-incidencia.interface';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class IncidenciaService {
-  private apiUrl = 'http://localhost:8080/api/v1';
-  private catalogosUrl = 'http://localhost:8080/api/catalogos';
+  private apiUrl = environment.apiBaseUrl;
+  private catalogosUrl = `${environment.apiBaseUrl}/catalogos`;
 
   constructor(private http: HttpClient) {}
 
@@ -154,7 +155,7 @@ export class IncidenciaService {
   }
 
   asignarTecnico(idIncidencia: number, idTecnico: number): Observable<any> {
-    const url = `http://localhost:8080/api/v1/asignacion`;
+    const url = `${environment.apiBaseUrl}/asignacion`;
     const body = { idIncidencia, idTecnico };
 
     return this.http.post<string>(url, body, {

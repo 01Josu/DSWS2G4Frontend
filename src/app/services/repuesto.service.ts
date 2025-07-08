@@ -2,10 +2,11 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { RepuestoInterface } from '../interfaces/repuesto.interface';
+import { environment } from '../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class RepuestoService {
-  private apiUrl = 'http://localhost:8080/api/v1/repuesto';
+  private apiUrl = `${environment.apiBaseUrl}/repuesto`;
 
   constructor(private http: HttpClient) {}
 

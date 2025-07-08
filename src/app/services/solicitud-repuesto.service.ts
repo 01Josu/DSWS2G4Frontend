@@ -4,12 +4,13 @@ import {Observable, of, tap, throwError} from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { SolicitudRepuestoInterface } from '../interfaces/solicitud-repuesto.interface';
 import { RepuestoInterface } from '../interfaces/repuesto.interface';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class SolicitudRepuestoService {
-  private apiUrl = 'http://localhost:8080/api/v1/solicitudes-repuestos';
+  private apiUrl = `${environment.apiBaseUrl}/solicitudes-repuestos`;
 
   constructor(private http: HttpClient) {}
 
