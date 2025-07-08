@@ -2,17 +2,18 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, catchError, map, throwError } from 'rxjs';
 import { TecnicoInterface } from '../interfaces/tecnico.interface';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TecnicoService {
-  private apiUrl = 'http://localhost:8080/api/v1';
+  private apiUrl = `${environment.apiBaseUrl}/asignacion`;
 
   constructor(private http: HttpClient) {}
 
   getTecnicosDisponibles(): Observable<TecnicoInterface[]> {
-    const url = `http://localhost:8080/api/v1/asignacion/tecnicos-disponibles`;
+    const url = `${this.apiUrl}/tecnicos-disponibles`;
 
     return this.http.get<any>(url).pipe(
       map(response => {

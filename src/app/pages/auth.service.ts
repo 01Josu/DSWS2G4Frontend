@@ -1,18 +1,19 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, tap, catchError, throwError } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = 'http://localhost:8080';
+  private apiUrl = `${environment.apiBaseUrl}/auth`;
 
   constructor(private http: HttpClient) { }
 
   login(loginData: any): Observable<any> {
     console.log('Enviando solicitud de login:', loginData);
-    return this.http.post<any>(`${this.apiUrl}/auth/login`, loginData)
+    return this.http.post<any>(`${this.apiUrl}/login`, loginData)
       .pipe(
         tap(response => {
           console.log('Respuesta login:', response);
