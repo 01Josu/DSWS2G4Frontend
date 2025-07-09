@@ -39,8 +39,9 @@
                 <input
                   type="text"
                   class="form-control form-control-lg"
-                  placeholder="Ingrese el código del equipo"
+                  placeholder="Código del equipo"
                   formControlName="codigoEquipo"
+                  [readonly]="true"
                   [ngClass]="{'is-invalid': incidenciaForm.get('codigoEquipo')?.invalid && incidenciaForm.get('codigoEquipo')?.touched}">
                 <div class="invalid-feedback">
                   Ingrese el código de equipo

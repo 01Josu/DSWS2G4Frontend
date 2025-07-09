@@ -16,17 +16,35 @@ export class GestionarIncidenciasComponent implements OnInit {
   incidenciaEditando: IncidenciaInterface | null = null;
   mensaje: string = '';
 
+  // Paginación
+  paginaActual: number = 1;
+  elementosPorPagina: number = 10;
+
+  // Carga
+  cargando: boolean = true;
+
   constructor(private incidenciaService: IncidenciaService) {}
 
   ngOnInit(): void {
     this.obtenerTodas();
   }
 
-  // ✔ Cambiado a obtener todas las incidencias (no solo no asignadas)
+  get incidenciasPaginadas(): IncidenciaInterface[] {
+    const inicio = (this.paginaActual - 1) * this.elementosPorPagina;
+    return this.incidencias.slice(inicio, inicio + this.elementosPorPagina);
+  }
+
   obtenerTodas(): void {
+    this.cargando = true;
     this.incidenciaService.getTodasIncidencias().subscribe({
-      next: data => this.incidencias = data,
-      error: err => this.mensaje = err.message
+      next: data => {
+        this.incidencias = data;
+        this.cargando = false;
+      },
+      error: err => {
+        this.mensaje = err.message;
+        this.cargando = false;
+      }
     });
   }
 
@@ -44,10 +62,6 @@ export class GestionarIncidenciasComponent implements OnInit {
         error: err => alert(err.message)
       });
     }
-  }
-
-  cancelarEdicion(): void {
-    this.incidenciaEditando = null;
   }
 
   eliminar(id: number): void {

@@ -57,6 +57,26 @@ export class IncidenciaComponent implements OnInit {
         this.incidenciaForm.get('problemaId')?.setValue('');
       }
     });
+
+    // Escuchar cambios en el correo para buscar el solicitante y su equipo
+    this.incidenciaForm.get('correo')?.valueChanges.subscribe((correo: string) => {
+      if (correo && this.incidenciaForm.get('correo')?.valid) {
+        this.incidenciaService.buscarUsuarioPorCorreo(correo).subscribe({
+          next: (usuario) => {
+            const codigo = usuario?.equipo?.codigo || '';
+            this.incidenciaForm.get('codigoEquipo')?.setValue(codigo);
+            this.incidenciaForm.get('codigoEquipo')?.disable(); // ← deshabilita
+          },
+          error: () => {
+            this.incidenciaForm.get('codigoEquipo')?.setValue('');
+            this.incidenciaForm.get('codigoEquipo')?.enable(); // ← habilita si hay error
+          }
+        });
+      } else {
+        this.incidenciaForm.get('codigoEquipo')?.setValue('');
+        this.incidenciaForm.get('codigoEquipo')?.enable(); // ← habilita si es vacío
+      }
+    });
   }
 
   ngOnInit(): void {
@@ -111,7 +131,7 @@ export class IncidenciaComponent implements OnInit {
 
   registrarIncidencia(): void {
     if (this.incidenciaForm.valid) {
-      this.incidenciaService.registrarIncidenciaPublica(this.incidenciaForm.value)
+      this.incidenciaService.registrarIncidenciaPublica(this.incidenciaForm.getRawValue())
         .subscribe({
           next: (response: any) => {
             this.mensajeExito = `Incidencia registrada exitosamente. ID: ${response.idIncidencia}`;

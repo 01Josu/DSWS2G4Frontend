@@ -302,4 +302,9 @@ export class IncidenciaService {
 
     return throwError(() => new Error(errorMessage));
   }
+
+  buscarUsuarioPorCorreo(correo: string): Observable<any> {
+    const url = `${this.apiUrl}/usuarios-solicitantes/buscar-por-correo?correo=${encodeURIComponent(correo)}`;
+    return this.http.get<any>(url);
+  }
 }
