@@ -6,10 +6,15 @@ import { environment } from '../../environments/environment';
 export interface UsuarioSolicitante {
   id?: number;
   correoNumero: string;
-  prioridadUsuario: number;
-  equipo: {
-    idEquipo: number;
-    // puedes agregar más campos si los necesitas mostrar
+  equipo?: {
+    idEquipo?: number;
+    codigoEquipo?: string;
+  };
+  datosEmpleado: {
+    nombre: string;
+    apellido: string;
+    dni: string;
+    celular?: string;
   };
 }
 

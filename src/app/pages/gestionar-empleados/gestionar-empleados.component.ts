@@ -14,12 +14,15 @@ export class GestionarUsuariosComponent implements OnInit {
   usuarios: UsuarioSolicitante[] = [];
   filtroId: number | null = null;
   mensaje: string = '';
+  cargando: boolean = false; // ✅ Nuevo indicador de carga
 
   nuevoUsuario: UsuarioSolicitante = {
     correoNumero: '',
-    prioridadUsuario: 1,
-    equipo: {
-      idEquipo: 1
+    datosEmpleado: {
+      nombre: '',
+      apellido: '',
+      dni: '',
+      celular: ''
     }
   };
 
@@ -33,22 +36,34 @@ export class GestionarUsuariosComponent implements OnInit {
   }
 
   obtenerUsuarios(): void {
-    this.usuarioService.listar().subscribe(data => {
-      this.usuarios = data;
-      this.mensaje = '';
+    this.cargando = true; // ✅ empieza carga
+    this.usuarioService.listar().subscribe({
+      next: (data) => {
+        this.usuarios = data;
+        this.mensaje = '';
+        this.cargando = false; // ✅ termina carga
+      },
+      error: () => {
+        this.mensaje = 'Error al cargar los usuarios';
+        this.usuarios = [];
+        this.cargando = false;
+      }
     });
   }
 
   buscarPorId(): void {
     if (this.filtroId !== null) {
+      this.cargando = true;
       this.usuarioService.buscarPorId(this.filtroId).subscribe({
         next: (usuario) => {
           this.usuarios = [usuario];
           this.mensaje = '';
+          this.cargando = false;
         },
         error: () => {
           this.mensaje = 'Usuario no encontrado';
           this.usuarios = [];
+          this.cargando = false;
         }
       });
     } else {
@@ -58,6 +73,7 @@ export class GestionarUsuariosComponent implements OnInit {
 
   eliminar(id: number): void {
     if (confirm('¿Estás seguro de eliminar este usuario?')) {
+      this.cargando = true;
       this.usuarioService.eliminar(id).subscribe(() => {
         this.obtenerUsuarios();
       });
@@ -65,21 +81,33 @@ export class GestionarUsuariosComponent implements OnInit {
   }
 
   guardarUsuario(): void {
+    this.cargando = true;
     if (this.editando && this.idEditando !== null) {
       this.usuarioService.actualizar(this.idEditando, this.nuevoUsuario).subscribe(() => {
         this.obtenerUsuarios();
         this.editando = false;
         this.idEditando = null;
+        this.cargando = false;
       });
     } else {
       this.usuarioService.crear(this.nuevoUsuario).subscribe(() => {
         this.obtenerUsuarios();
+        this.cargando = false;
       });
     }
   }
 
   editarUsuario(usuario: UsuarioSolicitante): void {
-    this.nuevoUsuario = { ...usuario };
+    this.nuevoUsuario = {
+      id: usuario.id,
+      correoNumero: usuario.correoNumero,
+      datosEmpleado: {
+        nombre: usuario.datosEmpleado?.nombre || '',
+        apellido: usuario.datosEmpleado?.apellido || '',
+        dni: usuario.datosEmpleado?.dni || '',
+        celular: usuario.datosEmpleado?.celular || ''
+      }
+    };
     this.editando = true;
     this.idEditando = usuario.id || null;
   }
@@ -89,10 +117,18 @@ export class GestionarUsuariosComponent implements OnInit {
     this.idEditando = null;
     this.nuevoUsuario = {
       correoNumero: '',
-      prioridadUsuario: 1,
-      equipo: {
-        idEquipo: 1
+      datosEmpleado: {
+        nombre: '',
+        apellido: '',
+        dni: '',
+        celular: ''
       }
     };
   }
+
+  // ✅ Para mejorar el renderizado de *ngFor
+  trackById(index: number, item: UsuarioSolicitante): number | undefined {
+    return item.id;
+  }
 }
+// 

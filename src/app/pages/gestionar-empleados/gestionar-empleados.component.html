@@ -1,5 +1,5 @@
 <div class="container mt-4">
-  <h3 class="mb-3">Gestión de Usuarios</h3>
+  <h3 class="mb-3">Gestión de Usuarios Solicitantes</h3>
 
   <!-- Buscador -->
   <div class="mb-3 row g-2">
@@ -20,18 +20,31 @@
 
   <div *ngIf="mensaje" class="alert alert-warning">{{ mensaje }}</div>
 
+  <!-- Spinner de carga -->
+  <div *ngIf="cargando" class="text-center my-4">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Cargando...</span>
+    </div>
+  </div>
+
   <!-- Formulario de creación/edición -->
   <div class="card p-3 mb-3">
     <h5>{{ editando ? 'Editar Usuario' : 'Nuevo Usuario' }}</h5>
     <div class="row g-2">
-      <div class="col-md-4">
+      <div class="col-md-3">
         <input [(ngModel)]="nuevoUsuario.correoNumero" class="form-control" placeholder="Correo o número">
       </div>
-      <div class="col-md-2">
-        <input type="number" [(ngModel)]="nuevoUsuario.prioridadUsuario" class="form-control" placeholder="Prioridad">
+      <div class="col-md-3">
+        <input [(ngModel)]="nuevoUsuario.datosEmpleado.nombre" class="form-control" placeholder="Nombre">
       </div>
       <div class="col-md-3">
-        <input type="number" [(ngModel)]="nuevoUsuario.equipo.idEquipo" class="form-control" placeholder="ID Equipo">
+        <input [(ngModel)]="nuevoUsuario.datosEmpleado.apellido" class="form-control" placeholder="Apellido">
+      </div>
+      <div class="col-md-3">
+        <input [(ngModel)]="nuevoUsuario.datosEmpleado.dni" class="form-control" placeholder="DNI">
+      </div>
+      <div class="col-md-3">
+        <input [(ngModel)]="nuevoUsuario.datosEmpleado.celular" class="form-control" placeholder="Celular">
       </div>
       <div class="col-md-3 d-grid gap-2">
         <button class="btn btn-success" (click)="guardarUsuario()">
@@ -46,23 +59,29 @@
   </div>
 
   <!-- Tabla de usuarios -->
-  <div class="table-responsive">
+  <div class="table-responsive" *ngIf="!cargando && usuarios.length > 0">
     <table class="table table-bordered table-hover align-middle">
       <thead class="table-dark">
         <tr>
           <th>ID</th>
           <th>Correo / Número</th>
-          <th>Prioridad</th>
-          <th>ID Equipo</th>
+          <th>Nombre</th>
+          <th>Apellido</th>
+          <th>DNI</th>
+          <th>Celular</th>
+          <th>Equipo Asignado</th>
           <th>Acciones</th>
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let e of usuarios">
+        <tr *ngFor="let e of usuarios; trackBy: trackById">
           <td>{{ e.id }}</td>
           <td>{{ e.correoNumero }}</td>
-          <td>{{ e.prioridadUsuario }}</td>
-          <td>{{ e.equipo.idEquipo }}</td>
+          <td>{{ e.datosEmpleado.nombre }}</td>
+          <td>{{ e.datosEmpleado.apellido }}</td>
+          <td>{{ e.datosEmpleado.dni }}</td>
+          <td>{{ e.datosEmpleado.celular }}</td>
+          <td>{{ e.equipo?.codigoEquipo || 'No asignado' }}</td>
           <td>
             <button class="btn btn-sm btn-warning me-1" (click)="editarUsuario(e)">
               <i class="bi bi-pencil-square"></i>
