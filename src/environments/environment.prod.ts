@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiBaseUrl: 'https://tu-api.vercel.app/api/v1' // Aquí irá la URL real de tu API en producción
+  apiBaseUrl: 'https://dsws2g4backend.onrender.com/api/v1'
 };
